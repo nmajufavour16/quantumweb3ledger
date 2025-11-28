@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Animation Utilities */
+[data-animate] {
+  --delay: 0ms;
+  animation-delay: var(--delay);
+  animation-fill-mode: both;
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transition: all 0.5s ease-out;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Google Translate Styles */
+.goog-te-gadget {
+  font-family: inherit !important;
+  font-size: 0 !important;
+}
+
+.goog-te-gadget .goog-te-combo {
+  font-size: 14px !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  color: white !important;
+  cursor: pointer !important;
+  outline: none !important;
+}
+
+.goog-te-gadget .goog-te-combo:hover {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-te-menu-value span {
+  color: white !important;
+}
+
+.goog-te-menu-value span:nth-child(3) {
+  display: none !important;
+}
+
+.goog-te-menu-value span:nth-child(5) {
+  display: none !important;
+}
+
+.goog-te-gadget img {
+  display: none !important;
+}

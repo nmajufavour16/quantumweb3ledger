@@ -1,0 +1,140 @@
+QFS Ledger Backend Documentation
+
+1. Project Structure
+/backend
+  /config         - Configuration files
+  /controllers    - Route controllers
+  /middleware    - Custom middleware
+  /models        - Database models
+  /routes        - API routes
+  /utils         - Utility functions
+  server.js      - Main entry point
+  .env           - Environment variables
+
+2. Setup
+- Node.js & Express for API server
+- MongoDB for database
+- JWT for authentication
+- Bcrypt for password hashing
+- Cors for cross-origin requests
+
+3. Main Features
+- User authentication (signup/login)
+- Email verification with OTP
+- JWT token verification
+- Basic profile management
+- Portfolio tracking endpoints
+
+4. API Endpoints
+
+Authentication:
+POST /api/auth/signup
+- Register new user
+- Required: email, password
+- Returns: user object, token, OTP sent to email
+- Note: User needs to verify email with OTP
+
+POST /api/auth/login  
+- Login existing user
+- Required: email, password
+- Returns: user object, token
+
+Email Verification:
+POST /api/user/verify-otp
+- Verify email with OTP
+- Required: email, otp
+- Returns: verified user object
+
+POST /api/user/resend-otp
+- Resend verification OTP
+- Requires: Authorization header
+- Returns: success message
+
+Password Management:
+POST /api/user/forgot-password
+- Request password reset
+- Required: email
+- Returns: success message, reset token sent to email
+
+POST /api/user/reset-password
+- Reset password
+- Required: token, newPassword
+- Returns: success message
+
+User Profile:
+GET /api/user/profile
+- Get user profile
+- Requires: Authorization header
+- Returns: user profile data
+
+PUT /api/user/profile
+- Update user profile
+- Requires: Authorization header
+- Returns: updated profile
+
+GET /api/user/info
+- Get user information
+- Requires: Authorization header
+- Returns: user data
+
+User Balance & Transactions:
+GET /api/user/balance
+- Get user's balances
+- Requires: Authorization header
+- Returns: balance details for all currencies
+
+GET /api/user/transactions
+- Get transaction history
+- Requires: Authorization header
+- Query params: page, limit
+- Returns: paginated transaction list
+
+POST /api/user/balance
+- Update user balance
+- Requires: Authorization header
+- Body: { currency, amount, type, description }
+- Returns: updated balance and transaction
+
+Portfolio:
+GET /api/portfolio
+- Get user's portfolio
+- Requires: Authorization header
+- Returns: portfolio data
+
+POST /api/portfolio
+- Add portfolio item
+- Requires: Authorization header, asset details
+- Returns: updated portfolio
+
+5. Environment Variables
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/qfs_ledger
+JWT_SECRET=your_jwt_secret
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASSWORD=your_email_app_password
+
+6. Authentication Flow
+1. User registers (signup)
+2. OTP sent to email
+3. User verifies email with OTP
+4. User can now login
+5. JWT token generated on login
+6. Token used for protected routes
+
+7. Error Handling
+- Standard error responses
+- HTTP status codes
+- Error messages in JSON format
+
+8. Security Measures
+- Password hashing
+- Email verification with OTP
+- JWT token expiration
+- CORS configuration
+- Input validation
+- Rate limiting
+
+9. Running the Server
+npm install     - Install dependencies
+npm start       - Start production server
+npm run dev     - Start development server
