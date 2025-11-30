@@ -1,0 +1,8 @@
+{
+  "databaseName": "admin",
+  "roles": [
+    { "roleName": "readWrite", "databaseName": "qfs" }
+  ],
+  "username": "ZION",
+  "password": "<REPLACE_WITH_SECURE_PASSWORD>"
+}

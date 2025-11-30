@@ -1,0 +1,8 @@
+{
+  "collection": "init",
+  "database": "qfs",
+  "dataSource": "ANCHOR",
+  "document": {
+    "init": true
+  }
+}
