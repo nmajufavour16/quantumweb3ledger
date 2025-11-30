@@ -21,21 +21,14 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Health Check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok' });
-});
-
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 
-// Database Connection
-mongoose.connect(
-  'mongodb+srv://nwebeduzion_db_user:1234@cluster0.2bq1zqu.mongodb.net/KWKWKW?retryWrites=true&w=majority&appName=Cluster0'
-)
+// Database connection
+mongoose.connect('mongodb+srv://agu:123@cluster0.rl2jwhk.mongodb.net/qfs?retryWrites=true&w=majority&appName=Cluster0')
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
