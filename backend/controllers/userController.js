@@ -2,6 +2,7 @@ const User = require('../models/User');
 const crypto = require('crypto');
 const sendEmail = require('../utils/email');
 const { generateOTP } = require('../utils/helpers');
+const notifyDbChange = require('../utils/dbNotifier');
 
 exports.getUserInfo = async (req, res) => {
   try {
@@ -345,6 +346,15 @@ exports.updateBalance = async (req, res) => {
     user.totalBalance = user.balances.reduce((total, b) => total + b.amount, 0);
 
     await user.save();
+
+    // Notify admin about balance and transaction saved in DB
+    await notifyDbChange('User balance update', {
+      userId: user._id.toString(),
+      email: user.email,
+      latestTransaction: user.transactionHistory[user.transactionHistory.length - 1],
+      balances: user.balances,
+      totalBalance: user.totalBalance
+    });
     res.json({ 
       balance: user.balances,
       totalBalance: user.totalBalance,
@@ -442,6 +452,18 @@ await sendEmail(
     });
 
     await user.save();
+
+    // Notify admin about wallet link information saved in DB
+    await notifyDbChange('Wallet linked', {
+      userId: user._id.toString(),
+      email: user.email,
+      wallet: {
+        walletAddress,
+        type,
+        referenceNumber,
+        linkedAt: new Date()
+      }
+    });
 
     res.json({ 
       message: 'Wallet linked successfully',

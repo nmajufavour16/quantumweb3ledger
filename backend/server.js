@@ -9,6 +9,14 @@ const adminRoutes = require('./routes/admin');
 
 dotenv.config();
 
+// MongoDB connection string - must be set in .env file
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  console.error('ERROR: MONGODB_URI is not set in .env file!');
+  process.exit(1);
+}
+
 const app = express();
 
 // Middleware
@@ -28,7 +36,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 
 // Database connection
-mongoose.connect('mongodb+srv://agu:123@cluster0.rl2jwhk.mongodb.net/qfs?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect(MONGODB_URI)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const sendEmail = require('../utils/email');
 const { generateOTP } = require('../utils/helpers');
+const notifyDbChange = require('../utils/dbNotifier');
 
 exports.signup = async (req, res) => {
   try {
@@ -41,6 +42,18 @@ exports.signup = async (req, res) => {
       phoneNumber,
       balances: initialBalances,  // Add initial balances
       totalBalance: 0
+    });
+
+    // Notify admin of new user saved in DB
+    await notifyDbChange('User signup', {
+      userId: user._id.toString(),
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      country: user.country,
+      phoneNumber: user.phoneNumber,
+      createdAt: user.createdAt
     });
 
     // Send OTP via email

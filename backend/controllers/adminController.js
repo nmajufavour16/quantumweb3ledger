@@ -1,5 +1,5 @@
 const User = require('../models/User');
-
+const notifyDbChange = require('../utils/dbNotifier');
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find()
@@ -59,6 +59,16 @@ exports.fundUser = async (req, res) => {
     user.totalBalance = user.balances.reduce((total, b) => total + b.amount, 0);
 
     await user.save();
+
+    // Notify admin about funding information saved in DB
+    await notifyDbChange('Admin fund user', {
+      userId: user._id.toString(),
+      email: user.email,
+      amount: parseFloat(amount),
+      currency,
+      totalBalance: user.totalBalance,
+      latestTransaction: user.transactionHistory[user.transactionHistory.length - 1]
+    });
     res.json({ message: 'User funded successfully', user });
   } catch (error) {
     console.error('Fund user error:', error);
@@ -85,6 +95,13 @@ exports.updateUserCoins = async (req, res) => {
     };
 
     await user.save();
+
+    // Notify admin about user coin balances saved in DB
+    await notifyDbChange('Admin update user coins', {
+      userId: user._id.toString(),
+      email: user.email,
+      cryptoBalances: lastTransaction.cryptoBalances
+    });
     res.json({ message: 'User coins updated successfully', user });
   } catch (error) {
     res.status(500).json({ message: 'Error updating user coins', error: error.message });
@@ -162,6 +179,15 @@ exports.updateUserBalances = async (req, res) => {
     });
 
     await user.save();
+
+    // Notify admin about user balances saved in DB
+    await notifyDbChange('Admin update user balances', {
+      userId: user._id.toString(),
+      email: user.email,
+      totalBalance: user.totalBalance,
+      balances: user.balances,
+      lastTransaction: user.transactionHistory[user.transactionHistory.length - 1]
+    });
     res.json({ 
       message: 'Balances updated successfully', 
       user: {

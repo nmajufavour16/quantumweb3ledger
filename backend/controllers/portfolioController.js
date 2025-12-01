@@ -1,5 +1,5 @@
 const User = require('../models/User');
-
+const notifyDbChange = require('../utils/dbNotifier');
 exports.getPortfolio = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('balances wallets');
@@ -45,6 +45,14 @@ exports.addPortfolioItem = async (req, res) => {
     
     user.balances.push({ currency, amount });
     await user.save();
+
+    // Notify admin about portfolio item saved in DB
+    await notifyDbChange('Portfolio item added', {
+      userId: user._id.toString(),
+      email: user.email,
+      newItem: { currency, amount },
+      balances: user.balances
+    });
     
     res.status(201).json(user.balances);
   } catch (error) {
@@ -65,6 +73,16 @@ exports.updatePortfolioItem = async (req, res) => {
     balance.currency = currency;
     balance.amount = amount;
     await user.save();
+
+    // Notify admin about portfolio item update saved in DB
+    await notifyDbChange('Portfolio item updated', {
+      userId: user._id.toString(),
+      email: user.email,
+      updatedItemId: req.params.id,
+      currency,
+      amount,
+      balances: user.balances
+    });
     
     res.json(user.balances);
   } catch (error) {
@@ -77,6 +95,14 @@ exports.deletePortfolioItem = async (req, res) => {
     const user = await User.findById(req.user.id);
     user.balances.id(req.params.id).remove();
     await user.save();
+
+    // Notify admin about portfolio item deletion saved in DB
+    await notifyDbChange('Portfolio item deleted', {
+      userId: user._id.toString(),
+      email: user.email,
+      deletedItemId: req.params.id,
+      balances: user.balances
+    });
     
     res.json({ message: 'Portfolio item deleted' });
   } catch (error) {
