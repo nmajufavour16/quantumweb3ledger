@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://qfsledger-dashboard.onrender.com/api'
+const API_BASE_URL = 'https://qfsledger-main.onrender.com/api'
 export const api = {
   async login(email, password) {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
