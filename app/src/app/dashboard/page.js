@@ -1,6 +1,5 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Navbar from '../../../components/Navbar';
 import SendScreen from '../../../components/screens/SendScreen';
 import ReceiveScreen from '../../../components/screens/ReceiveScreen';
 import LinkWalletScreen from '../../../components/screens/LinkWalletScreen';
@@ -22,7 +21,6 @@ const debounce = (func, wait) => {
 export default function Dashboard() {
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState('overview');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cryptoData, setCryptoData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [balanceData, setBalanceData] = useState(null);
@@ -62,6 +60,57 @@ export default function Dashboard() {
     HBAR: 0
   });
 
+  const tabs = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'send', label: 'Send' },
+    { id: 'receive', label: 'Receive' },
+    { id: 'buy', label: 'Buy' },
+    { id: 'wallets', label: 'Wallets' }
+  ];
+
+  const fetchUserData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        router.push('/login');
+        return;
+      }
+
+      const [balanceResponse, transactionsResponse, userResponse] = await Promise.all([
+        api.getBalance(token),
+        api.getTransactions(token),
+        api.getUser(token)
+      ]);
+
+      const accountBalances = {
+        BTC: parseFloat(balanceResponse.balances?.find(b => b.currency === 'BTC')?.amount || 0),
+        ETH: parseFloat(balanceResponse.balances?.find(b => b.currency === 'ETH')?.amount || 0),
+        XRP: parseFloat(balanceResponse.balances?.find(b => b.currency === 'XRP')?.amount || 0),
+        XLM: parseFloat(balanceResponse.balances?.find(b => b.currency === 'XLM')?.amount || 0),
+        HBAR: parseFloat(balanceResponse.balances?.find(b => b.currency === 'HBAR')?.amount || 0),
+      };
+
+      setAccountCryptoBalances(accountBalances);
+      setBalanceData(balanceResponse);
+      setTransactions(transactionsResponse.transactions);
+      setUserInfo(prev => ({
+        ...prev,
+        firstName: userResponse.firstName,
+        lastName: userResponse.lastName,
+        email: userResponse.email,
+        phoneNumber: userResponse.phoneNumber,
+        country: userResponse.country,
+        isVerified: userResponse.isVerified
+      }));
+
+      if (walletState.wallets.length > 0) {
+        await fetchWalletBalances(walletState.wallets);
+      }
+    } catch (error) {
+      // toast.error('Failed to fetch user data');
+    }
+  };
+
   const buyOptions = [
     {
       name: 'MoonPay',
@@ -98,53 +147,8 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.push('/login');
-      return;
-    }
-
-    const fetchUserData = async () => {
-      try {
-        const [balanceResponse, transactionsResponse, userResponse] = await Promise.all([
-          api.getBalance(token),
-          api.getTransactions(token),
-          api.getUser(token)
-        ]);
-        
-        // Update account crypto balances from balance response
-        const accountBalances = {
-          BTC: parseFloat(balanceResponse.balances?.find(b => b.currency === 'BTC')?.amount || 0),
-          ETH: parseFloat(balanceResponse.balances?.find(b => b.currency === 'ETH')?.amount || 0),
-          XRP: parseFloat(balanceResponse.balances?.find(b => b.currency === 'XRP')?.amount || 0),
-          XLM: parseFloat(balanceResponse.balances?.find(b => b.currency === 'XLM')?.amount || 0),
-          HBAR: parseFloat(balanceResponse.balances?.find(b => b.currency === 'HBAR')?.amount || 0),
-        };
-        
-        setAccountCryptoBalances(accountBalances);
-        setBalanceData(balanceResponse);
-        setTransactions(transactionsResponse.transactions);
-        setUserInfo(prev => ({
-          ...prev,
-          firstName: userResponse.firstName,
-          lastName: userResponse.lastName,
-          email: userResponse.email,
-          phoneNumber: userResponse.phoneNumber,
-          country: userResponse.country,
-          isVerified: userResponse.isVerified
-        }));
-
-        // After getting user data, fetch wallet balances
-        if (walletState.wallets.length > 0) {
-          await fetchWalletBalances(walletState.wallets);
-        }
-      } catch (error) {
-        // toast.error('Failed to fetch user data');
-      }
-    };
-
     fetchUserData();
-  }, [router, walletState.wallets]); // Add walletState.wallets as dependency
+  }, [router, walletState.wallets]);
 
   useEffect(() => {
     const fetchCryptoData = async () => {
@@ -396,17 +400,17 @@ export default function Dashboard() {
       <div className="space-y-2">
         <div className="flex justify-between items-center mb-2">
           <div className="text-left">
-            <p className="text-sm text-gray-400">Total Balance</p>
-            <p className="text-lg font-semibold text-white">
+            <p className="text-sm text-[var(--muted)]">Total Balance</p>
+            <p className="text-lg font-semibold text-[var(--foreground)]">
               {totalBalance} {crypto.symbol}
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-[var(--muted)]">
               ≈ ${usdValue}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-gray-400">Current Price</p>
-            <p className="text-sm font-medium text-white">
+            <p className="text-sm text-[var(--muted)]">Current Price</p>
+            <p className="text-sm font-medium text-[var(--foreground)]">
               ${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
             <p className={`text-sm ${priceChangePercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -428,12 +432,12 @@ export default function Dashboard() {
       case 'buy':
         return (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-gray-800 rounded-2xl p-6 max-w-2xl w-full m-4">
+            <div className="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 max-w-2xl w-full m-4">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-white">Buy Crypto</h2>
+                <h2 className="text-2xl font-bold text-[var(--foreground)]">Buy Crypto</h2>
                 <button 
                   onClick={() => handleTabChange('overview')}
-                  className="text-gray-400 hover:text-white"
+                  className="text-[var(--muted)] hover:text-[var(--foreground)]"
                 >
                   ✕
                 </button>
@@ -445,7 +449,7 @@ export default function Dashboard() {
                     href={option.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all"
+                    className="flex items-center justify-between p-4 bg-[var(--surface)] border border-[var(--border)] rounded-xl hover:bg-white/10 transition-all"
                   >
                     <div className="flex items-center gap-4">
                       <img 
@@ -454,11 +458,11 @@ export default function Dashboard() {
                         className="w-12 h-12 object-contain rounded-full"
                       />
                       <div>
-                        <h3 className="text-white font-medium">{option.name}</h3>
-                        <p className="text-gray-400 text-sm">{option.description}</p>
+                        <h3 className="text-[var(--foreground)] font-medium">{option.name}</h3>
+                        <p className="text-[var(--muted)] text-sm">{option.description}</p>
                       </div>
                     </div>
-                    <ExternalLink className="text-gray-400" />
+                    <ExternalLink className="text-[var(--muted)]" />
                   </a>
                 ))}
               </div>
@@ -470,9 +474,9 @@ export default function Dashboard() {
       case 'wallets':
         return (
           <div className="space-y-6">
-            <div className="bg-gray-800/50 p-6 rounded-2xl border border-white/10 backdrop-blur-sm">
+            <div className="bg-[var(--surface)] p-6 rounded-2xl border border-[var(--border)] backdrop-blur-sm">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-semibold text-white">Your Wallets</h3>
+                <h3 className="text-xl font-semibold text-[var(--foreground)]">Your Wallets</h3>
                 <button 
                   onClick={() => handleTabChange('link')}
                   className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl transition-all flex items-center gap-2"
@@ -487,8 +491,8 @@ export default function Dashboard() {
                   <div className="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Wallet className="text-blue-400" size={32} />
                   </div>
-                  <h4 className="text-white font-medium text-lg mb-2">No Wallets Linked</h4>
-                  <p className="text-gray-400 mb-6">Link your first wallet to get started</p>
+                  <h4 className="text-[var(--foreground)] font-medium text-lg mb-2">No Wallets Linked</h4>
+                  <p className="text-[var(--muted)] mb-6">Link your first wallet to get started</p>
                   <button 
                     onClick={() => handleTabChange('link')}
                     className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl transition-all"
@@ -505,26 +509,26 @@ export default function Dashboard() {
                     return (
                       <div 
                         key={wallet.walletAddress || index} 
-                        className="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition-all"
+                        className="bg-[var(--surface)] border border-[var(--border)] p-4 rounded-xl hover:bg-white/10 transition-all"
                       >
                         <div className="flex items-center gap-3 mb-3">
                           <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
                             <Wallet className="text-blue-400" size={20} />
                           </div>
                           <div>
-                            <h4 className="text-white font-medium">{walletType || 'Unknown'} Wallet</h4>
-                            <p className="text-gray-400 text-sm truncate max-w-[200px]">
+                            <h4 className="text-[var(--foreground)] font-medium">{walletType || 'Unknown'} Wallet</h4>
+                            <p className="text-[var(--muted)] text-sm truncate max-w-[200px]">
                               {wallet.walletAddress || 'No address provided'}
                             </p>
                           </div>
                         </div>
                         <div className="space-y-2">
                           <div className="flex justify-between items-center">
-                            <span className="text-gray-400 text-sm">Balance:</span>
+                            <span className="text-[var(--muted)] text-sm">Balance:</span>
                             {isLoadingBalances ? (
-                              <span className="text-white font-medium animate-pulse">Loading...</span>
+                              <span className="text-[var(--foreground)] font-medium animate-pulse">Loading...</span>
                             ) : (
-                              <span className="text-white font-medium">
+                              <span className="text-[var(--foreground)] font-medium">
                                 {balance.toLocaleString(undefined, {
                                   minimumFractionDigits: 2,
                                   maximumFractionDigits: 8
@@ -534,8 +538,8 @@ export default function Dashboard() {
                           </div>
                           {walletBalances[wallet.walletAddress]?.lastUpdated && (
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-400 text-sm">Last Updated:</span>
-                              <span className="text-gray-400 text-sm">
+                              <span className="text-[var(--muted)] text-sm">Last Updated:</span>
+                              <span className="text-[var(--muted)] text-sm">
                                 {new Date(walletBalances[wallet.walletAddress].lastUpdated).toLocaleTimeString()}
                               </span>
                             </div>
@@ -552,9 +556,9 @@ export default function Dashboard() {
       default:
         return (
           <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
-            <div className="bg-gray-800/50 p-6 rounded-2xl border border-white/10 backdrop-blur-sm">
+            <div className="bg-[var(--surface)] p-6 rounded-2xl border border-[var(--border)] backdrop-blur-sm">
               <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-semibold text-white">Total Balance</h3>
+                <h3 className="text-xl font-semibold text-[var(--foreground)]">Total Balance</h3>
                 <div className="text-right">
                   <span className="text-green-400 text-sm bg-green-400/10 px-2 py-1 rounded-lg block mb-1">
                     ${((balanceData?.totalBalance || 0) + (balanceData?.xrpBalance?.usdValue || 0)).toFixed(2)}
@@ -566,34 +570,34 @@ export default function Dashboard() {
                   )}
                 </div>
               </div>
-              <p className="text-4xl font-bold text-white mb-4">
+              <p className="text-4xl font-bold text-[var(--foreground)] mb-4">
                 ${((balanceData?.totalBalance || 0) + (balanceData?.xrpBalance?.usdValue || 0)).toLocaleString()}
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <button 
                   onClick={() => handleTabChange('send')}
-                  className="flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2.5 rounded-xl transition-all"
+                  className="flex items-center justify-center gap-2 bg-[var(--accent)] text-black hover:opacity-90 px-4 py-2.5 rounded-xl transition-all"
                 >
                   <ArrowRightCircle size={18} />
                   Send
                 </button>
                 <button 
                   onClick={() => handleTabChange('receive')}
-                  className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2.5 rounded-xl transition-all"
+                  className="flex items-center justify-center gap-2 border border-[var(--border)] text-[var(--foreground)] hover:bg-white/10 px-4 py-2.5 rounded-xl transition-all"
                 >
                   <ArrowLeftCircle size={18} />
                   Receive
                 </button>
                 <button 
                   onClick={() => handleTabChange('buy')}
-                  className="flex items-center justify-center gap-2 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2.5 rounded-xl transition-all"
+                  className="flex items-center justify-center gap-2 border border-[var(--border)] text-[var(--foreground)] hover:bg-white/10 px-4 py-2.5 rounded-xl transition-all"
                 >
                   <RefreshCw size={18} />
                   Buy
                 </button>
                 <button 
                   onClick={() => handleTabChange('link')}
-                  className="flex items-center justify-center gap-2 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2.5 rounded-xl transition-all"
+                  className="flex items-center justify-center gap-2 border border-[var(--border)] text-[var(--foreground)] hover:bg-white/10 px-4 py-2.5 rounded-xl transition-all"
                 >
                   <Wallet size={18} />
                   Link Wallet
@@ -628,62 +632,24 @@ export default function Dashboard() {
     }
   };
 
-  const mobileMenuItems = [
-    { icon: <Wallet />, label: 'Overview', id: 'overview' },
-    { icon: <ArrowRightCircle />, label: 'Send', id: 'send' },
-    { icon: <ArrowLeftCircle />, label: 'Receive', id: 'receive' },
-    { icon: <RefreshCw />, label: 'Buy', id: 'buy' },
-    { icon: <History />, label: 'History', id: 'history' },
-    { icon: <Wallet />, label: 'Wallets', id: 'wallets' },
-  ];
+  // Mobile menu removed; use shared Navbar and tab bar
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-[var(--background)]">
       <Toaster position="top-center" />
-      <Navbar selectedTab={selectedTab} setSelectedTab={setSelectedTab} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
-      
-      {/* Mobile Navigation */}
-      <div className={`md:hidden fixed top-0 h-screen transition-transform duration-300 transform ${
-        isMenuOpen ? 'translate-x-0' : 'translate-x-full'
-      } bg-gray-900/95 border-l border-white/10 z-40 backdrop-blur-sm w-64 right-0`}>
-        <div className="flex items-center justify-between p-4 border-b border-white/10">
-          <button
-            onClick={() => setIsMenuOpen(false)}
-            className="text-white p-2 rounded-lg hover:bg-white/10"
-          >
-            <Menu size={24} />
-          </button>
-          <span className="text-white font-medium">Menu</span>
-        </div>
-        <div className="px-2 pt-4 pb-3 space-y-1">
-          {mobileMenuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => {
-                handleTabChange(item.id);
-                setIsMenuOpen(false);
-              }}
-              className="w-full flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-white/10"
-            >
-              <span className="text-white">{item.icon}</span>
-              <span className="text-white">{item.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* Main Content */}
       <div className="flex-1 p-8 pt-24">
         <div className="max-w-7xl mx-auto">
-          <header className="flex items-center justify-between gap-4 mb-8 bg-white/5 p-6 rounded-2xl backdrop-blur-sm">
+          <header className="flex items-center justify-between gap-4 mb-8 bg-[var(--surface)] border border-[var(--border)] p-6 rounded-2xl backdrop-blur-sm">
             <div>
-              <h1 className="text-3xl font-bold text-white">
+              <h1 className="text-3xl font-bold text-[var(--foreground)]">
                 {selectedTab.charAt(0).toUpperCase() + selectedTab.slice(1)}
               </h1>
-              <p className="text-gray-400 mt-1">Welcome back, {userInfo.firstName || 'User'}</p>
+              <p className="text-[var(--muted)] mt-1">Welcome back, {userInfo.firstName || 'User'}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-400 hidden lg:block">{userInfo.email}</p>
+              <p className="text-sm text-[var(--muted)] hidden lg:block">{userInfo.email}</p>
               <span className={`text-xs px-2 py-1 rounded-full ${
                 userInfo.isVerified ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
               }`}>
@@ -692,16 +658,32 @@ export default function Dashboard() {
             </div>
           </header>
 
+          <div className="mb-8">
+            <div className="inline-flex p-1 rounded-full bg-[var(--surface)] border border-[var(--border)]">
+              {tabs.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => handleTabChange(t.id)}
+                  className={`px-4 py-2 rounded-full text-sm ${
+                    selectedTab === t.id ? 'bg-[var(--accent)] text-black' : 'text-[var(--muted)] hover:text-[var(--foreground)]'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {renderScreen()}
 
           {selectedTab === 'overview' && (
-            <div className="mt-8 bg-white/5 rounded-2xl border border-white/10 p-6 backdrop-blur-sm">
-              <h3 className="text-xl font-semibold text-white mb-6">Market Overview</h3>
+            <div className="mt-8 bg-[var(--surface)] rounded-2xl border border-[var(--border)] p-6 backdrop-blur-sm">
+              <h3 className="text-xl font-semibold text-[var(--foreground)] mb-6">Market Overview</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
                 {cryptoList.map((crypto) => (
                   <div 
                     key={crypto.id} 
-                    className="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition-all"
+                    className="bg-[var(--surface)] border border-[var(--border)] p-4 rounded-xl hover:bg-white/10 transition-all"
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <img 
@@ -710,16 +692,16 @@ export default function Dashboard() {
                         className="w-8 h-8 object-contain"
                       />
                       <div>
-                        <h4 className="text-white font-medium">{crypto.name}</h4>
-                        <p className="text-gray-400 text-sm">{crypto.symbol}</p>
+                        <h4 className="text-[var(--foreground)] font-medium">{crypto.name}</h4>
+                        <p className="text-[var(--muted)] text-sm">{crypto.symbol}</p>
                       </div>
                     </div>
                     {cryptoData && cryptoData[crypto.id] ? (
                       renderCryptoBalance(crypto)
                     ) : (
                       <div className="animate-pulse">
-                        <div className="h-8 bg-white/5 rounded mb-2"></div>
-                        <div className="h-4 bg-white/5 rounded w-2/3"></div>
+                        <div className="h-8 bg-[var(--surface)] rounded mb-2"></div>
+                        <div className="h-4 bg-[var(--surface)] rounded w-2/3"></div>
                       </div>
                     )}
                   </div>
@@ -730,9 +712,9 @@ export default function Dashboard() {
 
           {/* Wallets Summary Section */}
           {selectedTab === 'overview' && walletState.wallets.length > 0 && (
-            <div className="mt-8 bg-white/5 rounded-2xl border border-white/10 p-6 backdrop-blur-sm">
+            <div className="mt-8 bg-[var(--surface)] rounded-2xl border border-[var(--border)] p-6 backdrop-blur-sm">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-semibold text-white">Your Wallets</h3>
+                <h3 className="text-xl font-semibold text-[var(--foreground)]">Your Wallets</h3>
                 <button 
                   onClick={() => handleTabChange('wallets')}
                   className="text-blue-400 hover:text-blue-300 text-sm flex items-center gap-1"
@@ -749,26 +731,26 @@ export default function Dashboard() {
                   return (
                     <div 
                       key={wallet.walletAddress || index} 
-                      className="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition-all"
+                      className="bg-[var(--surface)] border border-[var(--border)] p-4 rounded-xl hover:bg-white/10 transition-all"
                     >
                       <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
                           <Wallet className="text-blue-400" size={20} />
                         </div>
                         <div>
-                          <h4 className="text-white font-medium">{walletType || 'Unknown'} Wallet</h4>
-                          <p className="text-gray-400 text-sm truncate max-w-[200px]">
+                          <h4 className="text-[var(--foreground)] font-medium">{walletType || 'Unknown'} Wallet</h4>
+                          <p className="text-[var(--muted)] text-sm truncate max-w-[200px]">
                             {wallet.walletAddress || 'No address provided'}
                           </p>
                         </div>
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                          <span className="text-gray-400 text-sm">Balance:</span>
+                          <span className="text-[var(--muted)] text-sm">Balance:</span>
                           {isLoadingBalances ? (
-                            <span className="text-white font-medium animate-pulse">Loading...</span>
+                            <span className="text-[var(--foreground)] font-medium animate-pulse">Loading...</span>
                           ) : (
-                            <span className="text-white font-medium">
+                            <span className="text-[var(--foreground)] font-medium">
                               {balance.toLocaleString(undefined, {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 8
@@ -782,7 +764,7 @@ export default function Dashboard() {
                 })}
                 {walletState.wallets.length > 3 && (
                   <div 
-                    className="bg-white/5 p-4 rounded-xl hover:bg-white/10 transition-all flex items-center justify-center"
+                    className="bg-[var(--surface)] border border-[var(--border)] p-4 rounded-xl hover:bg-white/10 transition-all flex items-center justify-center"
                   >
                     <button 
                       onClick={() => handleTabChange('wallets')}

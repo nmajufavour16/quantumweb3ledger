@@ -1,11 +1,13 @@
 "use client";
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const isDashboard = pathname?.startsWith('/dashboard');
 
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-lg bg-[var(--surface)]/90 border-b border-[var(--border)]">
@@ -19,14 +21,16 @@ export default function Navbar() {
               <a href="/mission" className="text-[var(--muted)] hover:text-[var(--foreground)]">Mission</a>
               <a href="/contact" className="text-[var(--muted)] hover:text-[var(--foreground)]">Contact</a>
             </div>
-            <div className="hidden md:flex gap-4">
-              <button onClick={() => router.push('/login')} className="px-4 py-2 text-sm rounded-full text-[var(--foreground)] hover:bg-white/10 transition-colors">
-                Sign In
-              </button>
-              <button onClick={() => router.push('/signup')} className="px-4 py-2 text-sm rounded-full bg-[var(--accent)] text-black hover:opacity-90 transition-colors">
-                Sign Up
-              </button>
-            </div>
+            {!isDashboard && (
+              <div className="hidden md:flex gap-4">
+                <button onClick={() => router.push('/login')} className="px-4 py-2 text-sm rounded-full text-[var(--foreground)] hover:bg-white/10 transition-colors">
+                  Sign In
+                </button>
+                <button onClick={() => router.push('/signup')} className="px-4 py-2 text-sm rounded-full bg-[var(--accent)] text-black hover:opacity-90 transition-colors">
+                  Sign Up
+                </button>
+              </div>
+            )}
             <button className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <X className="text-white w-6 h-6" /> : <Menu className="text-white w-6 h-6" />}
             </button>
@@ -39,8 +43,12 @@ export default function Navbar() {
               <a href="/pricing" className="text-gray-200 hover:text-white py-2">Pricing</a>
               <a href="/mission" className="text-gray-200 hover:text-white py-2">Mission</a>
               <a href="/contact" className="text-gray-200 hover:text-white py-2">Contact</a>
-              <button onClick={() => router.push('/login')} className="py-2 text-left text-gray-200 hover:text-white">Sign In</button>
-              <button onClick={() => router.push('/signup')} className="py-2 text-left text-gray-200 hover:text-white">Sign Up</button>
+              {!isDashboard && (
+                <>
+                  <button onClick={() => router.push('/login')} className="py-2 text-left text-gray-200 hover:text-white">Sign In</button>
+                  <button onClick={() => router.push('/signup')} className="py-2 text-left text-gray-200 hover:text-white">Sign Up</button>
+                </>
+              )}
             </div>
           </div>
         )}

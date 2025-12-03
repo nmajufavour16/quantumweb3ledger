@@ -103,7 +103,7 @@ export default function Home() {
                 <div className="grid grid-cols-2 gap-4 h-full">
                   {[1, 2, 3, 4].map((i) => (
                     <div key={i} className="bg-[var(--surface)] rounded-lg p-4 border border-[var(--border)]">
-                      <Image src={["/globe.svg","/vercel.svg","/window.svg","/file.svg"][i-1] || '/globe.svg'} alt="Gallery" width={300} height={300} className="w-full h-full object-contain" />
+                      <Image src={["/bitcoin-coin.svg","/ethereum-diamond.svg","/network-nodes.svg","/candles.svg"][i-1]} alt="Gallery" width={300} height={300} className="w-full h-full object-contain" />
                     </div>
                   ))}
                 </div>

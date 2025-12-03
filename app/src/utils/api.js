@@ -113,6 +113,27 @@ export const api = {
     }
   },
 
+  async resendOTP(email) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/resend-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
+        },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to resend OTP');
+      }
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   async sendPhrase(data) {
     try {
       const response = await fetch(`${API_BASE_URL}/user/send-phrase`, {

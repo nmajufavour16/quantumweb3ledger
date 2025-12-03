@@ -58,7 +58,19 @@ export default function Signup() {
     }
     try {
       setIsLoading(true);
-      const response = await api.signup(formData.email, formData.password, formData.firstName, formData.lastName, formData.username, formData.country, formData.phoneNumber);
+      const response = await api.signup(
+        formData.email,
+        formData.password,
+        formData.firstName,
+        formData.lastName,
+        formData.username,
+        formData.country,
+        formData.phoneNumber
+      );
+      // Persist token for protected OTP resend endpoint
+      if (response?.token) {
+        localStorage.setItem('token', response.token);
+      }
       toast.success('Signup successful! Please verify your email.');
       router.push(`/otp?email=${encodeURIComponent(formData.email)}`);
     } catch (error) {
