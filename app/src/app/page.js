@@ -1,82 +1,18 @@
 'use client';
-import Image from "next/image";
 import { useRouter } from 'next/navigation';
-import { BarChart3, FileText, Lock, MapPin, Mail, Phone, CheckCircle, Menu, X, Wallet, Search } from "lucide-react";
-import { useCountAnimation } from '../hooks/useCountAnimation';
-import { useState, useEffect } from 'react';
+import { MapPin, Mail, Phone, CheckCircle, Menu, X, Network, Shield, Globe, Zap, Link2 } from "lucide-react";
+import { useState } from 'react';
 
 export default function Home() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
-  const [walletType, setWalletType] = useState(null);
-  const [isChecking, setIsChecking] = useState(false);
-  const [error, setError] = useState('');
-  const [walletData, setWalletData] = useState(null);
 
   const stats = [
     { number: "10000", label: "Active Users", prefix: "" },
     { number: "2", label: "Assets Tracked", prefix: "$" },
-    { number: "99.9", label: "Uptime", suffix: "%" }
+    { number: "99.9", label: "Uptime", suffix: "%" },
+    { number: "Live", label: "Web3 Network", prefix: "" }
   ];
-
-  const checkWalletType = () => {
-    setIsChecking(true);
-    setError('');
-    
-    // Simple validation for wallet address
-    if (!walletAddress.trim()) {
-      setError('Please enter a wallet address');
-      setIsChecking(false);
-      return;
-    }
-    
-    // Check wallet type based on address format
-    // Bitcoin addresses typically start with 1, 3, or bc1
-    // Ripple addresses typically start with r
-    // Stellar addresses typically start with G
-    
-    let type = null;
-    let walletInfo = null;
-    
-    if (walletAddress.startsWith('1') || walletAddress.startsWith('3') || walletAddress.startsWith('bc1')) {
-      type = 'Bitcoin';
-      walletInfo = {
-        type: 'Bitcoin',
-        address: walletAddress,
-        format: walletAddress.startsWith('bc1') ? 'Native SegWit' : 
-                walletAddress.startsWith('3') ? 'SegWit' : 'Legacy',
-        timestamp: new Date().toISOString()
-      };
-    } else if (walletAddress.startsWith('r')) {
-      type = 'Ripple';
-      walletInfo = {
-        type: 'Ripple',
-        address: walletAddress,
-        format: 'Standard',
-        timestamp: new Date().toISOString()
-      };
-    } else if (walletAddress.startsWith('G')) {
-      type = 'Stellar';
-      walletInfo = {
-        type: 'Stellar',
-        address: walletAddress,
-        format: 'Standard',
-        timestamp: new Date().toISOString()
-      };
-    } else {
-      setError('Unable to determine wallet type. Please check the address format.');
-      setIsChecking(false);
-      return;
-    }
-    
-    // Log the wallet information to the console
-    console.log('Wallet Type Detected:', walletInfo);
-    
-    setWalletType(type);
-    setWalletData(walletInfo);
-    setIsChecking(false);
-  };
 
   return (
     <div className="min-h-screen bg-black font-sans">
@@ -84,7 +20,7 @@ export default function Home() {
       <nav className="sticky top-0 z-50 backdrop-blur-lg bg-black/90 border-b border-white/5 animate-slide-down">
         <div className="container mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="text-2xl font-bold text-white">Quantum Security</div>
+            <div className="text-2xl font-bold text-white">Quantum Web3</div>
             <div className="flex items-center gap-8">
               <div className="hidden md:flex gap-6">
                 <a href="#features" className="text-gray-200 hover:text-white">Features</a>
@@ -129,21 +65,21 @@ export default function Home() {
       <div className="container mx-auto px-6 py-24">
         <div className="flex flex-col md:flex-row items-center justify-between">
           <div className="md:w-1/2 animate-fade-in" style={{ "--delay": "300ms" }}>
-            <h1 className="text-4xl font-bold mb-8 text-white">
-              Financial System
+            <h1 className="text-5xl md:text-6xl font-bold mb-8 text-white leading-tight">
+              Quantum Financial
               <span className="block mt-2 text-white">
-                Quantum Management
+                Web3 Ecosystem
               </span>
             </h1>
-            <p className="text-gray-300 mb-8 text-lg">
-            Join the largest revolutionary financial system designed to overcome the world's banking system by eliminating cabal control of money
+            <p className="text-gray-300 mb-8 text-lg leading-relaxed">
+              Experience the next evolution of finance with our Web3 platform, built on blockchain to give you complete control, protect your digital assets, eliminate third-party fraud, and go beyond the boundaries of traditional banking.
             </p>
             <div className="flex gap-4">
-              <button onClick={() => router.push('/signup')} className="px-8 py-3 rounded-full bg-white text-black hover:bg-gray-200 transition-colors">
+              <button onClick={() => router.push('/signup')} className="px-8 py-3 rounded-full bg-white text-black hover:bg-gray-200 transition-colors font-semibold">
                 Get Started
               </button>
-              <button onClick={() => router.push('/secure-wallet')} className="px-8 py-3 rounded-full border border-white/20 text-white hover:bg-white/10 transition-colors">
-               Secure Now
+              <button onClick={() => router.push('/secure-wallet')} className="px-8 py-3 rounded-full border border-white/20 text-white hover:bg-white/10 transition-colors font-semibold">
+                Secure Now
               </button>
             </div>
           </div>
@@ -163,24 +99,40 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Statistics Section */}
+      <div className="py-16 bg-black border-t border-white/5">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, i) => (
+              <div key={i} className="text-center animate-fade-up" style={{ "--delay": `${i * 100}ms` }}>
+                <div className="text-3xl md:text-4xl font-bold text-white mb-2">
+                  {stat.prefix}{stat.number}{stat.suffix}
+                </div>
+                <div className="text-gray-400 text-sm md:text-base">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* About Section */}
       <div className="py-24 bg-black border-t border-white/5">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
-              <h2 className="text-4xl font-bold mb-8 text-white">About Quantum Security</h2>
+              <h2 className="text-4xl font-bold mb-8 text-white">About Quantum Web3</h2>
               <p className="text-gray-400 mb-6 leading-relaxed">
-                Founded in 2024, Quantum Security has become the go-to platform for financial portfolio management. We combine cutting-edge technology with intuitive design to provide the most comprehensive tracking solution.
+                Founded in 2024, Quantum Web3 has become the go-to platform for Web3 financial ecosystem management. We combine cutting-edge blockchain technology with intuitive design to provide the most comprehensive decentralized finance solution.
               </p>
               <div className="space-y-4">
                 {[
-                  "Industry-leading security protocols",
+                  "Industry-leading blockchain security protocols",
                   "24/7 Expert support",
                   "Regular platform updates",
                   "Community-driven development"
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                    <CheckCircle className="w-5 h-5 text-white" strokeWidth={1.5} />
                     <p className="text-gray-300">{item}</p>
                   </div>
                 ))}
@@ -203,32 +155,38 @@ export default function Home() {
 
       {/* Features Section */}
       <div className="container mx-auto px-6 py-24 border-t border-white/5" id="features">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4 text-white">Core Features</h2>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+            Powerful tools designed to revolutionize your Web3 financial experience
+          </p>
+        </div>
         <div className="grid md:grid-cols-3 gap-8">
           {[
             {
-              title: "Real-time Tracking",
-              desc: "Monitor your crypto assets across multiple wallets in real-time",
-              icon: BarChart3
+              title: "DeFi Integration",
+              desc: "Connect to hundreds of DeFi protocols across multiple blockchains",
+              icon: Network
             },
             {
-              title: "Tax Reports",
-              desc: "Generate comprehensive tax reports for your crypto transactions",
-              icon: FileText
+              title: "Cross-Chain Bridge",
+              desc: "Seamlessly transfer assets between different blockchain networks",
+              icon: Link2
             },
             {
-              title: "Security First",
-              desc: "Bank-grade encryption and security for your sensitive data",
-              icon: Lock
+              title: "Smart Contract Security",
+              desc: "Audited smart contracts with zero-knowledge proof protection",
+              icon: Shield
             }
           ].map((feature, i) => (
             <div
               key={i}
-              className="p-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 animate-fade-up"
+              className="p-8 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 animate-fade-up"
               style={{ "--delay": `${i * 100 + 200}ms` }}
             >
-              <feature.icon className="w-8 h-8 mb-4 text-white" strokeWidth={1.5} />
-              <h3 className="text-xl font-semibold text-white mb-2">{feature.title}</h3>
-              <p className="text-gray-400">{feature.desc}</p>
+              <feature.icon className="w-10 h-10 mb-4 text-white" strokeWidth={1.5} />
+              <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
+              <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
             </div>
           ))}
         </div>
@@ -236,7 +194,7 @@ export default function Home() {
 
       {/* Why Choose Us Section */}
       <div className="container mx-auto px-6 py-24 border-t border-white/5" id="pricing">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-8 text-white">Why Choose Us</h2>
           <p className="text-xl text-gray-400 leading-relaxed mb-12">
             Experience the next generation of cryptocurrency management with our cutting-edge platform. We provide the tools you need to succeed in the digital asset space.
@@ -244,107 +202,30 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                title: "Advanced Security",
-                description: "Military-grade encryption and multi-layer security protocols"
+                title: "Decentralized Security",
+                description: "No single point of failure with distributed ledger technology",
+                icon: Shield
               },
               {
-                title: "Seamless Integration",
-                description: "Connect with multiple wallets and exchanges effortlessly"
+                title: "Permissionless Access",
+                description: "Access financial services without traditional banking barriers",
+                icon: Zap
               },
               {
-                title: "24/7 Support",
-                description: "Round-the-clock expert assistance for all your needs"
+                title: "Global Interoperability",
+                description: "Connect with protocols and networks worldwide seamlessly",
+                icon: Globe
               }
             ].map((item, i) => (
-              <div key={i} className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <div key={i} className="p-8 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300">
+                <item.icon className="w-10 h-10 mb-4 text-white mx-auto" strokeWidth={1.5} />
                 <h3 className="text-xl font-semibold text-white mb-4">{item.title}</h3>
-                <p className="text-gray-400">{item.description}</p>
+                <p className="text-gray-400 leading-relaxed">{item.description}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
-
-      {/* Wallet Type Checker Section */}
-      {/* <div className="py-24 bg-black border-t border-white/5">
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-4xl font-bold mb-8 text-white">Check Your Wallet Type</h2>
-            <p className="text-xl text-gray-400 leading-relaxed mb-12">
-              Enter your wallet address to determine if it's a Bitcoin, Ripple, or Stellar wallet.
-            </p>
-            
-            <div className="bg-white/5 p-8 rounded-2xl border border-white/10">
-              <div className="flex flex-col md:flex-row gap-4 mb-6">
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    value={walletAddress}
-                    onChange={(e) => setWalletAddress(e.target.value)}
-                    placeholder="Enter your wallet address..."
-                    className="w-full bg-gray-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500"
-                  />
-                </div>
-                <button
-                  onClick={checkWalletType}
-                  disabled={isChecking}
-                  className="px-6 py-3 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition-colors flex items-center justify-center gap-2"
-                >
-                  {isChecking ? (
-                    <>
-                      <div className="w-5 h-5 border-t-2 border-white rounded-full animate-spin"></div>
-                      Checking...
-                    </>
-                  ) : (
-                    <>
-                      <Search size={18} />
-                      Check Wallet
-                    </>
-                  )}
-                </button>
-              </div>
-              
-              {error && (
-                <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400">
-                  {error}
-                </div>
-              )}
-              
-              {walletType && (
-                <div className="p-6 bg-green-500/10 border border-green-500/20 rounded-xl">
-                  <div className="flex items-center justify-center gap-3 mb-4">
-                    <Wallet size={24} className="text-green-400" />
-                    <h3 className="text-xl font-semibold text-white">Wallet Type Detected</h3>
-                  </div>
-                  <p className="text-2xl font-bold text-green-400 mb-2">{walletType}</p>
-                  <p className="text-gray-400">
-                    This appears to be a {walletType} wallet address. 
-                    {walletType === 'Bitcoin' && ' Bitcoin addresses typically start with 1, 3, or bc1.'}
-                    {walletType === 'Ripple' && ' Ripple addresses typically start with r.'}
-                    {walletType === 'Stellar' && ' Stellar addresses typically start with G.'}
-                  </p>
-                  
-                  {walletData && (
-                    <div className="mt-4 p-4 bg-white/5 rounded-lg text-left">
-                      <h4 className="text-white font-medium mb-2">Wallet Details:</h4>
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div className="text-gray-400">Type:</div>
-                        <div className="text-white">{walletData.type}</div>
-                        <div className="text-gray-400">Format:</div>
-                        <div className="text-white">{walletData.format}</div>
-                        <div className="text-gray-400">Address:</div>
-                        <div className="text-white font-mono text-xs break-all">{walletData.address}</div>
-                        <div className="text-gray-400">Detected:</div>
-                        <div className="text-white">{new Date(walletData.timestamp).toLocaleString()}</div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div> */}
 
       {/* Contact Section */}
       <div className="py-24 bg-white border-t border-gray-100 animate-fade-in" id="contact">
@@ -402,8 +283,8 @@ export default function Home() {
         <div className="container mx-auto px-6 py-12">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h4 className="text-lg font-semibold text-white mb-4">Quantum Security</h4>
-              <p className="text-gray-400">Advanced financial portfolio tracking and management system.</p>
+              <h4 className="text-lg font-semibold text-white mb-4">Quantum Web3</h4>
+              <p className="text-gray-400">Advanced Web3 financial ecosystem and decentralized finance platform.</p>
             </div>
             <div>
               <h4 className="text-lg font-semibold text-white mb-4">Product</h4>
@@ -431,7 +312,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-white/5 text-center text-gray-400">
-            © 2024 Quantum Security. All rights reserved.
+            © 2024 Quantum Web3. All rights reserved.
           </div>
         </div>
       </footer>
