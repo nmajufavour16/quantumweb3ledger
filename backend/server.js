@@ -19,7 +19,7 @@ const app = express();
 
 app.use(cors({
   origin: [
-    "https://qfsledger-frontend.vercel.app", 
+    "https://qfsweb3ledger.vercel.app", 
     "http://localhost:3000",                 
     "http://localhost:5000"               
   ],
