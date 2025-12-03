@@ -35,10 +35,29 @@ app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 
-// Database connection
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// Database connection with improved error handling
+mongoose.connect(MONGODB_URI, {
+  // Connection options for better reliability
+  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+  socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+})
+  .then(() => {
+    console.log('✅ Connected to MongoDB successfully');
+    console.log(`📊 Database: ${mongoose.connection.db.databaseName}`);
+  })
+  .catch(err => {
+    console.error('❌ MongoDB connection error:', err.message);
+    process.exit(1);
+  });
+
+// Handle connection events
+mongoose.connection.on('disconnected', () => {
+  console.log('⚠️  MongoDB disconnected');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('❌ MongoDB connection error:', err);
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

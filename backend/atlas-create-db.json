@@ -1,7 +1,7 @@
 {
   "collection": "init",
   "database": "qfs",
-  "dataSource": "ANCHOR",
+  "dataSource": "quantumweb3",
   "document": {
     "init": true
   }

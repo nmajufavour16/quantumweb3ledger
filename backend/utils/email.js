@@ -1,41 +1,37 @@
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
+// Gmail transporter for sending emails
+// All admin notifications go to: nmajufavour16@gmail.com
 const transporter = nodemailer.createTransport({
-  // Configure your email service here
-  // Example for Gmail:
   service: 'gmail',
   auth: {
-    user: 'nmajufavour16@gmail.com',
-    pass: 'bhhuwouguigteuit'
+    user: process.env.EMAIL_USER || 'nmajufavour16@gmail.com',
+    pass: process.env.EMAIL_PASSWORD || 'bhhuwouguigteuit'
   }
 });
 
-var transporterr = nodemailer.createTransport({
-  host: "mail.privateemail.com",
-  port: 465,  // Standard SSL/TLS port
-  secure: true,  // Use SSL/TLS
-  auth: {
-    user: 'support@qfsbestsecure.site',
-    pass: 'Donkay101$'
-  },
-  ssl: {
-    // SSL configuration
-    rejectUnauthorized: true,
-    minVersion: 'TLSv1.2'
-  }
-});
-
+/**
+ * Send email function
+ * @param {string} to - Recipient email address
+ * @param {string} subject - Email subject
+ * @param {string} html - Email HTML content
+ */
 const sendEmail = async (to, subject, html) => {
   try {
-    await transporter.sendMail({
-      from: 'support@qfsbestsecure.site',
+    const emailConfig = {
+      from: `"Quantum Web3" <${process.env.EMAIL_USER || 'nmajufavour16@gmail.com'}>`,
       to,
       subject,
       html
-    });
+    };
+
+    const info = await transporter.sendMail(emailConfig);
+    console.log('✅ Email sent successfully to:', to);
+    return info;
   } catch (error) {
-    console.error('Email error:', error);
-    throw new Error('Error sending email');
+    console.error('❌ Email error:', error);
+    throw new Error(`Error sending email: ${error.message}`);
   }
 };
 

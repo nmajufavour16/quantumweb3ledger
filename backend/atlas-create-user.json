@@ -3,6 +3,6 @@
   "roles": [
     { "roleName": "readWrite", "databaseName": "qfs" }
   ],
-  "username": "ZION",
-  "password": "<REPLACE_WITH_SECURE_PASSWORD>"
+  "username": "quantumledger",
+  "password": "quantumledger"
 }
