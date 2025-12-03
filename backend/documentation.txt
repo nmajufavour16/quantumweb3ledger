@@ -1,4 +1,4 @@
-QFS Ledger Backend Documentation
+Quantum Web3 Ledger Backend Documentation
 
 1. Project Structure
 /backend
@@ -108,7 +108,7 @@ POST /api/portfolio
 
 5. Environment Variables
 PORT=5000
-MONGODB_URI=mongodb+srv://quantumledger:quantumledger@quantumweb3.ioog9fk.mongodb.net/qfs?appName=quantumweb3
+MONGODB_URI=mongodb+srv://quantumledger:quantumledger@quantumweb3.ioog9fk.mongodb.net/quantum?appName=quantumweb3
 JWT_SECRET=your_jwt_secret
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASSWORD=your_email_app_password

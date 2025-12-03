@@ -1,4 +1,9 @@
-const API_BASE_URL = 'https://qfsledger-dashboard.onrender.com/api'
+// Use local backend when running offline, or production URL when deployed
+// For offline preview, this will use localhost:5000 (your local backend)
+// For production, set NEXT_PUBLIC_API_URL environment variable
+const API_BASE_URL = typeof window !== 'undefined' 
+  ? (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api')
+  : 'http://localhost:5000/api'
 export const api = {
   async login(email, password) {
     const response = await fetch(`${API_BASE_URL}/auth/login`, {

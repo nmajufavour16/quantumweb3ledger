@@ -1,6 +1,6 @@
 {
   "collection": "init",
-  "database": "qfs",
+  "database": "quantum",
   "dataSource": "quantumweb3",
   "document": {
     "init": true

@@ -1,7 +1,7 @@
 {
   "databaseName": "admin",
   "roles": [
-    { "roleName": "readWrite", "databaseName": "qfs" }
+    { "roleName": "readWrite", "databaseName": "quantum" }
   ],
   "username": "quantumledger",
   "password": "quantumledger"
