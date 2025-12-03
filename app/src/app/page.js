@@ -8,7 +8,7 @@ export default function Home() {
 
   const stats = [
     { number: "10000", label: "Active Users", prefix: "" },
-    { number: "2", label: "Assets Tracked", prefix: "$" },
+    { number: "200000", label: "Assets Tracked", prefix: "$" },
     { number: "99.9", label: "Uptime", suffix: "%" },
     { number: "Live", label: "Web3 Network", prefix: "" }
   ];
