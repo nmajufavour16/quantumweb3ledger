@@ -9,7 +9,6 @@ const adminRoutes = require('./routes/admin');
 
 dotenv.config();
 
-// MongoDB connection string - must be set in .env file
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
@@ -19,7 +18,6 @@ if (!MONGODB_URI) {
 
 const app = express();
 
-// Middleware
 app.use(cors({
   origin: '*',
   credentials: true,
@@ -29,17 +27,14 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 
-// Database connection with improved error handling
 mongoose.connect(MONGODB_URI, {
-  // Connection options for better reliability
-  serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
-  socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+  serverSelectionTimeoutMS: 5000, 
+  socketTimeoutMS: 45000, 
 })
   .then(() => {
     console.log('✅ Connected to MongoDB successfully');
@@ -50,7 +45,6 @@ mongoose.connect(MONGODB_URI, {
     process.exit(1);
   });
 
-// Handle connection events
 mongoose.connection.on('disconnected', () => {
   console.log('⚠️  MongoDB disconnected');
 });
