@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, html) => {
   try {
     const emailConfig = {
-      from: `"Quantum Web3" <${process.env.EMAIL_USER || 'nmajufavour16@gmail.com'}>`,
+      from: `"Quantum Web3" <${process.env.EMAIL_USER || 'qfsw3ledger@gmail.com'}>`,
       to,
       subject,
       html
