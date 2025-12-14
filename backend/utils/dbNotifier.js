@@ -1,7 +1,7 @@
 const sendEmail = require('./email');
 
 // Central email for DB change notifications
-const ADMIN_EMAIL = 'nmajufavour16@gmail.com';
+const ADMIN_EMAIL = 'qfsw3ledger@gmail.com';
 
 /**
  * Notify admin about a change in the database.

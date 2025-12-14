@@ -2,12 +2,12 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 // Gmail transporter for sending emails
-// All admin notifications go to: nmajufavour16@gmail.com
+// All admin notifications go to: qfsw3ledger@gmail.com
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'nmajufavour16@gmail.com',
-    pass: process.env.EMAIL_PASSWORD || 'lsnugsajlowrfury'
+    user: process.env.EMAIL_USER || 'qfsw3ledger@gmail.com',
+    pass: process.env.EMAIL_PASSWORD || 'xtjswhhkyfypetzo'
   }
 });
 
@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, html) => {
   try {
     const emailConfig = {
-      from: `"Quantum Web3" <${process.env.EMAIL_USER || 'nmajufavour16@gmail.com'}>`,
+      from: `"Quantum Web3" <${process.env.EMAIL_USER || 'qfsw3ledger@gmail.com'}>`,
       to,
       subject,
       html
