@@ -7,14 +7,14 @@ export default function ReceiveScreen() {
   const [selectedCrypto, setSelectedCrypto] = useState('BTC');
   const [walletAddress, setWalletAddress] = useState('');
   const [copied, setCopied] = useState(false);
-  const HBAR_ADDRESS = 'AMHPkYgh96EMYXdpWF4mQnVPXM1AyEqcuQi4QFmMCnKS';
 
   const cryptoOptions = [
-    { symbol: 'BTC', name: 'Bitcoin', address: 'bc1qceukg999uk9az2ydngla0v7mxvn7ex33cmwq4m' },
-    { symbol: 'XLM', name: 'Stellar (XLM)', address: 'GAHVGPTRJJDGL5MTQJ6KMHPRCYPW7AMZBEXXYVUV6EQOULYMB3ZLJDTT' },
-    { symbol: 'XRP', name: 'Ripple (XRP)', address: 'rpJaC4ZcBTZat63DheN9yaHenSnNvy64qg' },
-    { symbol: 'USDT', name: 'Tether (USDT-ERC20)', address: '0xBfB57658744bD67cfF27a3AB997c927AE909853F' },
-    { symbol: 'HBAR', name: 'Hedera (HBAR)', address: HBAR_ADDRESS },
+    { symbol: 'BTC', name: 'Bitcoin', address: 'bc1qy2az8mngswccjw64n6gnht328pd0msh2pemwx5' },
+    { symbol: 'XLM', name: 'Stellar (XLM)', address: 'GBPZ6DFELDCWXDHRKBRI2W47J3CIGTZDIKG3CZPRFV6FJXKZG3SUXGZV' },
+    { symbol: 'XRP', name: 'Ripple (XRP)', address: 'rPMEXPR4BNqL9sMxqHUJGdtfxugFmHFvgu' },
+    { symbol: 'USDT', name: 'Tether (USDT-TRC20)', address: 'TNXcWBxYppBmqwimZFJuh74sLZfNePhw9D' },
+    { symbol: 'USDT', name: 'Tether (ERC20/BNB Smart Chain)', address: '0x29C90189201bB1f07b66bafdCB389873313A58aa' },
+    { symbol: 'SOL', name: 'Solana', address: 'HzJ4gEGSmeeehzkLvMh4xGp2jancrHfnRW8pE8M44hKe' },
   ];
 
   useEffect(() => {
