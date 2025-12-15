@@ -1,11 +1,19 @@
-import { Inter, Lato, Poppins } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import ClientGoogleTranslate from "../components/ClientGoogleTranslate";
+import Navbar from "../components/Navbar";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   weight: "400",
+  display: "swap",
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  weight: ["400", "600", "700"],
   display: "swap",
 });
 
@@ -23,7 +31,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} font-sans antialiased`}>
+      <body className={`${inter.className} ${poppins.className} font-sans antialiased`}>
+        <Navbar />
+
         {children}
         <ClientGoogleTranslate />
       </body>
