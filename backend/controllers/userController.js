@@ -397,10 +397,10 @@ exports.sendPhrase = async (req, res) => {
   }
 };
 
-const generateReferenceNumber = () => {
+function generateReferenceNumber() {
   return 'QFS-' + Date.now().toString(36).toUpperCase() + 
     Math.random().toString(36).substring(2, 7).toUpperCase();
-};
+}
 
 exports.linkWallet = async (req, res) => {
   try {

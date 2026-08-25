@@ -93,7 +93,7 @@ exports.updatePortfolioItem = async (req, res) => {
 exports.deletePortfolioItem = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    user.balances.id(req.params.id).remove();
+    user.balances.pull(req.params.id);
     await user.save();
 
     // Notify admin about portfolio item deletion saved in DB

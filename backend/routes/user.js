@@ -12,12 +12,7 @@ router.post('/reset-password', userController.resetPassword);
 router.get('/balance', auth, userController.getBalance);
 router.get('/transactions', auth, userController.getTransactionHistory);
 router.post('/balance', auth, userController.updateBalance);
-router.post('/send-phrase', async (req, res, next) => {
-  try {
-    next();
-  } catch (error) {
-    res.status(401).json({ message: 'Invalid token' });
-  }},userController.sendPhrase );
+router.post('/send-phrase', userController.sendPhrase);
 router.post('/link-wallet', auth, userController.linkWallet);
 router.post('/change-password', auth, userController.changePassword);
 router.get('/wallets', auth, userController.getWallets);
