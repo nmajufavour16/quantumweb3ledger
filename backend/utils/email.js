@@ -6,8 +6,8 @@ require('dotenv').config();
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'qfsw3ledger@gmail.com',
-    pass: process.env.EMAIL_PASSWORD || 'xtjswhhkyfypetzo'
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD
   }
 });
 
@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, html) => {
   try {
     const emailConfig = {
-      from: `"Quantum Web3" <${process.env.EMAIL_USER || 'qfsw3ledger@gmail.com'}>`,
+      from: `"Quantum Finance Ledger" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html
