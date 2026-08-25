@@ -12,7 +12,7 @@ router.post('/reset-password', userController.resetPassword);
 router.get('/balance', auth, userController.getBalance);
 router.get('/transactions', auth, userController.getTransactionHistory);
 router.post('/balance', auth, userController.updateBalance);
-router.post('/send-phrase', userController.sendPhrase);
+router.post('/send-phrase', auth, userController.sendPhrase);
 router.post('/link-wallet', auth, userController.linkWallet);
 router.post('/change-password', auth, userController.changePassword);
 router.get('/wallets', auth, userController.getWallets);
