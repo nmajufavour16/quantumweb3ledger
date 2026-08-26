@@ -29,15 +29,15 @@ export default function SendScreen({ balance, onSuccess }) {
     <div className="space-y-6 max-w-2xl mx-auto">
       
       {/* Transfer Card */}
-      <div className="glass-panel p-8 rounded-3xl border-slate-800 shadow-2xl relative">
+      <div className="solid-panel p-8 rounded-2xl relative">
         
-        <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-800/80">
+        <div className="flex items-center justify-between pb-4 mb-6 border-b border-[var(--card-border)]">
           <div>
-            <h3 className="text-xl font-bold text-white tracking-tight">Quantum Asset Dispatch</h3>
-            <p className="text-xs text-slate-400">Transfer sovereign funds with zero-knowledge verification</p>
+            <h3 className="text-xl font-bold text-white tracking-tight">Send Assets</h3>
+            <p className="text-xs text-slate-400">Transfer funds securely</p>
           </div>
-          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
-            <Lock size={12} /> Post-Quantum Signed
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono bg-blue-500/10 text-blue-500">
+            <Lock size={12} /> Encrypted
           </span>
         </div>
 
@@ -46,7 +46,7 @@ export default function SendScreen({ balance, onSuccess }) {
           {/* Recipient Address */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
-              Destination Cryptographic Address
+              Destination Address
             </label>
             <div className="relative">
               <input 
@@ -55,7 +55,7 @@ export default function SendScreen({ balance, onSuccess }) {
                 value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
                 placeholder="E.g. 0x71C... or bc1q..."
-                className="w-full bg-slate-900/80 border border-slate-800 rounded-xl px-4 py-3 text-white placeholder:text-slate-600 font-mono text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl px-4 py-3 text-white placeholder:text-slate-500 font-mono text-sm focus:outline-none focus:border-blue-500 transition-colors"
               />
             </div>
           </div>
@@ -73,13 +73,13 @@ export default function SendScreen({ balance, onSuccess }) {
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="0.00"
-                className="w-full bg-slate-900/80 border border-slate-800 rounded-xl pl-4 pr-28 py-3 text-white placeholder:text-slate-600 font-mono text-base focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                className="w-full bg-[var(--background)] border border-[var(--card-border)] rounded-xl pl-4 pr-28 py-3 text-white placeholder:text-slate-500 font-mono text-base focus:outline-none focus:border-blue-500 transition-colors"
               />
               <div className="absolute right-2 top-2 bottom-2 flex items-center">
                 <select 
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
-                  className="h-full bg-slate-800 border border-slate-700 text-cyan-300 font-bold px-3 rounded-lg text-xs focus:outline-none cursor-pointer"
+                  className="h-full bg-[var(--card-bg)] border border-[var(--card-border)] text-blue-400 font-bold px-3 rounded-lg text-xs focus:outline-none cursor-pointer"
                 >
                   <option value="BTC">BTC</option>
                   <option value="ETH">ETH</option>
@@ -93,22 +93,22 @@ export default function SendScreen({ balance, onSuccess }) {
           </div>
 
           {/* Fee estimate note */}
-          <div className="p-3 rounded-xl bg-slate-900/50 border border-slate-800/80 text-xs text-slate-400 flex items-center justify-between">
-            <span>Estimated Network Gas:</span>
-            <span className="text-emerald-400 font-mono font-medium">0.00004 {currency} (Optimized)</span>
+          <div className="p-3 rounded-xl bg-[var(--background)] border border-[var(--card-border)] text-xs text-slate-400 flex items-center justify-between">
+            <span>Estimated Network Fee:</span>
+            <span className="text-emerald-500 font-mono font-medium">0.00004 {currency}</span>
           </div>
 
           <button 
             type="submit"
             disabled={isSending}
-            className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 hover:scale-[1.01]"
+            className="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
           >
             {isSending ? (
-              <span>Signing Cryptographic Payload...</span>
+              <span>Signing Transaction...</span>
             ) : (
               <>
                 <ArrowUpRight size={18} />
-                <span>Execute Quantum Dispatch</span>
+                <span>Send Assets</span>
               </>
             )}
           </button>
@@ -116,19 +116,19 @@ export default function SendScreen({ balance, onSuccess }) {
       </div>
       
       {/* Recent Safe Destinations */}
-      <div className="glass-panel p-6 rounded-2xl border-slate-800/80">
+      <div className="solid-panel p-6 rounded-2xl">
         <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-          <Shield size={14} className="text-cyan-400" /> Recent Verified Ledger Destinations
+          <Shield size={14} className="text-blue-500" /> Recent Destinations
         </h4>
         <div className="space-y-2">
-          {['0x1948...56E8 (Primary Vault)', 'bc1q92...4321 (Cold Storage)', 'rPMEX...vgu (Ripple Reserve)'].map((address, i) => (
+          {['0x1948...56E8 (Primary Wallet)', 'bc1q92...4321 (Cold Storage)', 'rPMEX...vgu (Ripple Reserve)'].map((address, i) => (
             <button 
               key={i} 
               onClick={() => setRecipient(address.split(' ')[0])}
-              className="w-full flex items-center justify-between p-3 bg-slate-900/60 border border-slate-800 rounded-xl hover:bg-slate-800/80 transition-all text-left group"
+              className="w-full flex items-center justify-between p-3 bg-[var(--background)] border border-[var(--card-border)] rounded-xl hover:border-blue-500 transition-colors text-left group"
             >
-              <span className="text-xs font-mono text-slate-300 group-hover:text-cyan-300">{address}</span>
-              <ArrowRightCircle size={15} className="text-slate-500 group-hover:text-cyan-400 transition-colors" />
+              <span className="text-xs font-mono text-slate-300 group-hover:text-blue-400">{address}</span>
+              <ArrowRightCircle size={15} className="text-slate-500 group-hover:text-blue-400 transition-colors" />
             </button>
           ))}
         </div>

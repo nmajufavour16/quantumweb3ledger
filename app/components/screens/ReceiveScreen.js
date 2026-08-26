@@ -38,22 +38,22 @@ export default function ReceiveScreen() {
     <div className="max-w-xl mx-auto space-y-6">
       
       {/* Receive Card */}
-      <div className="glass-panel p-8 rounded-3xl border-slate-800 shadow-2xl relative">
+      <div className="solid-panel p-8 rounded-2xl relative">
         
-        <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-800/80">
+        <div className="flex items-center justify-between pb-4 mb-6 border-b border-[var(--card-border)]">
           <div>
-            <h2 className="text-xl font-bold text-white tracking-tight">Deposit / Inbound Settlement</h2>
-            <p className="text-xs text-slate-400">Receive sovereign funds to your dedicated ledger vault</p>
+            <h2 className="text-xl font-bold text-white tracking-tight">Receive Assets</h2>
+            <p className="text-xs text-slate-400">Receive funds securely to your ledger</p>
           </div>
-          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
-            <Shield size={12} /> Air-Gapped Key
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono bg-blue-500/10 text-blue-500">
+            <Shield size={12} /> Secure Key
           </span>
         </div>
         
         {/* Currency selection pills */}
         <div className="mb-6">
           <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2.5">
-            Select Settlement Asset & Network
+            Select Asset & Network
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {cryptoOptions.map((crypto) => (
@@ -61,10 +61,10 @@ export default function ReceiveScreen() {
                 key={crypto.symbol}
                 type="button"
                 onClick={() => setSelectedCrypto(crypto.symbol)}
-                className={`p-3 rounded-xl border text-left transition-all ${
+                className={`p-3 rounded-xl border text-left transition-colors ${
                   selectedCrypto === crypto.symbol
-                    ? 'border-cyan-400 bg-cyan-500/15 text-cyan-300 shadow-sm shadow-cyan-500/10'
-                    : 'border-slate-800 bg-slate-900/60 hover:border-slate-700 text-slate-300'
+                    ? 'border-blue-500 bg-blue-500/10 text-blue-400'
+                    : 'border-[var(--card-border)] bg-[var(--background)] hover:border-blue-500 text-slate-300'
                 }`}
               >
                 <div className="text-xs font-bold">{crypto.symbol}</div>
@@ -75,8 +75,8 @@ export default function ReceiveScreen() {
         </div>
 
         {/* QR Code Container */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 mb-6 text-center">
-          <div className="inline-block p-4 bg-white rounded-2xl shadow-xl mb-4">
+        <div className="bg-[var(--background)] border border-[var(--card-border)] rounded-2xl p-6 mb-6 text-center">
+          <div className="inline-block p-4 bg-white rounded-2xl shadow-sm mb-4">
             <QRCodeSVG
               value={walletAddress}
               size={180}
@@ -84,13 +84,13 @@ export default function ReceiveScreen() {
               includeMargin={false}
               renderAs="svg"
               bgColor="#ffffff"
-              fgColor="#030712"
+              fgColor="#000000"
             />
           </div>
 
           <div className="text-xs text-slate-400 font-mono flex items-center justify-center gap-1.5 mb-4">
-            <QrCode size={14} className="text-cyan-400" />
-            <span>Scan via cold wallet or mobile terminal</span>
+            <QrCode size={14} className="text-blue-500" />
+            <span>Scan via wallet app</span>
           </div>
           
           {/* Address Bar */}
@@ -99,22 +99,22 @@ export default function ReceiveScreen() {
               type="text"
               value={walletAddress}
               readOnly
-              className="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-4 py-3 text-white font-mono text-xs pr-12 focus:outline-none"
+              className="w-full bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl px-4 py-3 text-white font-mono text-xs pr-12 focus:outline-none"
             />
             <button
               onClick={handleCopy}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-2 rounded-lg bg-slate-800 hover:bg-slate-700 transition-colors"
             >
-              {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
+              {copied ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
             </button>
           </div>
         </div>
 
         {/* Warning Callout */}
-        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-start gap-2.5">
+        <div className="p-3.5 rounded-xl bg-orange-500/10 border border-orange-500/20 text-xs text-orange-400 flex items-start gap-2.5">
           <AlertTriangle size={16} className="shrink-0 mt-0.5" />
           <span>
-            Only dispatch <strong className="text-white">{selectedCrypto}</strong> to this address. Cross-network asset mismatch will result in irreversible cryptographic loss.
+            Only send <strong className="text-white">{selectedCrypto}</strong> to this address. Cross-network asset mismatch will result in loss of funds.
           </span>
         </div>
 

@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Navbar from '../../../components/Navbar';
+import Sidebar from '../../../components/Sidebar';
 import SendScreen from '../../../components/screens/SendScreen';
 import ReceiveScreen from '../../../components/screens/ReceiveScreen';
 import LinkWalletScreen from '../../../components/screens/LinkWalletScreen';
@@ -42,7 +42,6 @@ const debounce = (func, wait) => {
 export default function Dashboard() {
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState('overview');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cryptoData, setCryptoData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [balanceData, setBalanceData] = useState(null);
@@ -81,20 +80,20 @@ export default function Dashboard() {
 
   const buyOptions = [
     {
-      name: 'MoonPay Institutional',
+      name: 'MoonPay',
       description: 'Instant fiat on-ramp via Wire, SEPA, or Credit Card',
       url: 'https://www.moonpay.com',
       logo: 'https://cdn.brandfetch.io/id6XER0Pfn/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B'
     },
     {
-      name: 'Binance Direct',
-      description: 'Deep liquidity exchange pairing across 500+ markets',
+      name: 'Binance',
+      description: 'Deep liquidity exchange',
       url: 'https://www.binance.com',
       logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png'
     },
     {
-      name: 'Coinbase Custody',
-      description: 'US-regulated institutional liquidity gateway',
+      name: 'Coinbase',
+      description: 'US-regulated institutional liquidity',
       url: 'https://www.coinbase.com',
       logo: 'https://cdn.brandfetch.io/idwDWo4ONQ/w/400/h/400/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B'
     }
@@ -150,7 +149,8 @@ export default function Dashboard() {
     const fetchCryptoData = async () => {
       try {
         const response = await fetch(
-          'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ripple,stellar,ethereum,shiba-inu,hedera-hashgraph&vs_currencies=usd&include_24h_change=true&include_last_updated_at=true&include_high_24h=true'
+          `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ripple,stellar,ethereum,shiba-inu,hedera-hashgraph&vs_currencies=usd&include_24h_change=true&include_last_updated_at=true&include_high_24h=true&_t=${Date.now()}`,
+          { cache: 'no-store' }
         );
         const data = await response.json();
         setCryptoData(data);
@@ -357,10 +357,10 @@ export default function Dashboard() {
     const priceChangePercent = cryptoData[crypto.id]?.usd_24h_change?.toFixed(2) || 0;
 
     return (
-      <div className="space-y-2 pt-2 border-t border-slate-800/80">
+      <div className="space-y-2 pt-2 border-t border-[var(--card-border)]">
         <div className="flex justify-between items-end">
           <div>
-            <p className="text-[10px] uppercase font-mono tracking-wider text-slate-400">Vault Balance</p>
+            <p className="text-[10px] uppercase font-mono tracking-wider text-slate-400">Total Balance</p>
             <p className="text-sm font-bold text-white font-mono">
               {totalBalance} {crypto.symbol}
             </p>
@@ -369,11 +369,11 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-[10px] uppercase font-mono tracking-wider text-slate-400">Spot Index</p>
+            <p className="text-[10px] uppercase font-mono tracking-wider text-slate-400">Price</p>
             <p className="text-xs font-bold text-white font-mono">
               ${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            <p className={`text-[11px] font-semibold ${priceChangePercent >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+            <p className={`text-[11px] font-semibold ${priceChangePercent >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
               {priceChangePercent >= 0 ? '+' : ''}{priceChangePercent}%
             </p>
           </div>
@@ -390,16 +390,16 @@ export default function Dashboard() {
         return <ReceiveScreen />;
       case 'buy':
         return (
-          <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
-            <div className="glass-panel rounded-3xl p-8 max-w-2xl w-full border-slate-800 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
-              <div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
+          <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+            <div className="solid-panel rounded-2xl p-8 max-w-2xl w-full animate-in fade-in zoom-in-95 duration-200">
+              <div className="flex justify-between items-center mb-6 pb-4 border-b border-[var(--card-border)]">
                 <div>
-                  <h2 className="text-xl font-bold text-white tracking-tight">Institutional Fiat On-Ramp</h2>
-                  <p className="text-xs text-slate-400">Acquire digital assets via regulated settlement partners</p>
+                  <h2 className="text-xl font-bold text-white tracking-tight">Buy Crypto</h2>
+                  <p className="text-xs text-slate-400">Purchase assets using fiat.</p>
                 </div>
                 <button 
                   onClick={() => handleTabChange('overview')}
-                  className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-lg hover:bg-slate-800 text-slate-300 flex items-center justify-center transition-colors"
                 >
                   ✕
                 </button>
@@ -411,20 +411,20 @@ export default function Dashboard() {
                     href={option.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between p-4 bg-slate-900/80 border border-slate-800 rounded-2xl hover:border-cyan-500/40 hover:bg-slate-800/80 transition-all group"
+                    className="flex items-center justify-between p-4 bg-[var(--background)] border border-[var(--card-border)] rounded-xl hover:border-blue-500 transition-colors group"
                   >
                     <div className="flex items-center gap-4">
                       <img 
                         src={option.logo} 
                         alt={option.name} 
-                        className="w-11 h-11 object-contain rounded-xl bg-slate-950 p-1.5 border border-slate-800"
+                        className="w-10 h-10 object-contain rounded-lg bg-white p-1"
                       />
                       <div>
-                        <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">{option.name}</h3>
+                        <h3 className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{option.name}</h3>
                         <p className="text-xs text-slate-400">{option.description}</p>
                       </div>
                     </div>
-                    <ExternalLink className="text-slate-500 group-hover:text-cyan-400 transition-colors" size={18} />
+                    <ExternalLink className="text-slate-500 group-hover:text-blue-400 transition-colors" size={18} />
                   </a>
                 ))}
               </div>
@@ -436,15 +436,15 @@ export default function Dashboard() {
       case 'wallets':
         return (
           <div className="space-y-6 max-w-5xl mx-auto">
-            <div className="glass-panel p-8 rounded-3xl border-slate-800 shadow-2xl">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
+            <div className="solid-panel p-8 rounded-2xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--card-border)]">
                 <div>
-                  <h3 className="text-xl font-bold text-white tracking-tight">Connected Multi-Chain Wallets</h3>
-                  <p className="text-xs text-slate-400">Manage all external hot, cold, and exchange balances</p>
+                  <h3 className="text-xl font-bold text-white tracking-tight">Connected Wallets</h3>
+                  <p className="text-xs text-slate-400">Manage all external hot, cold and exchange wallets</p>
                 </div>
                 <button 
                   onClick={() => handleTabChange('link')}
-                  className="bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 text-xs shadow-lg shadow-cyan-500/20"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2.5 rounded-lg transition-colors flex items-center gap-2 text-xs"
                 >
                   <Wallet size={16} />
                   Link New Wallet
@@ -453,16 +453,16 @@ export default function Dashboard() {
               
               {walletState.wallets.length === 0 ? (
                 <div className="text-center py-16">
-                  <div className="w-16 h-16 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <Wallet className="text-cyan-400" size={32} />
+                  <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Wallet className="text-blue-500" size={32} />
                   </div>
                   <h4 className="text-white font-bold text-base mb-1">No External Wallets Linked</h4>
-                  <p className="text-slate-400 text-xs mb-6 max-w-sm mx-auto">Connect your hardware or software wallets to consolidate your sovereign balance</p>
+                  <p className="text-slate-400 text-xs mb-6 max-w-sm mx-auto">Connect your external wallets to view balances here.</p>
                   <button 
                     onClick={() => handleTabChange('link')}
-                    className="bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-bold px-6 py-3 rounded-xl transition-all text-xs"
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-lg transition-colors text-xs"
                   >
-                    Connect First Wallet
+                    Connect Wallet
                   </button>
                 </div>
               ) : (
@@ -474,24 +474,24 @@ export default function Dashboard() {
                     return (
                       <div 
                         key={wallet.walletAddress || index} 
-                        className="bg-slate-900/70 border border-slate-800 p-5 rounded-2xl hover:border-cyan-500/30 transition-all"
+                        className="bg-[var(--background)] border border-[var(--card-border)] p-5 rounded-xl hover:border-blue-500 transition-colors"
                       >
                         <div className="flex items-center gap-3 mb-4">
-                          <div className="w-10 h-10 bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-center justify-center">
-                            <Wallet className="text-cyan-400" size={20} />
+                          <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                            <Wallet className="text-blue-500" size={20} />
                           </div>
                           <div className="overflow-hidden">
-                            <h4 className="text-white font-bold text-sm truncate">{walletType || 'External'} Ledger</h4>
+                            <h4 className="text-white font-bold text-sm truncate">{walletType || 'External Wallet'}</h4>
                             <p className="text-slate-400 text-[11px] font-mono truncate">
-                              {wallet.walletAddress || 'Sovereign Connection'}
+                              {wallet.walletAddress || 'Verified'}
                             </p>
                           </div>
                         </div>
-                        <div className="space-y-2 pt-3 border-t border-slate-800/80">
+                        <div className="space-y-2 pt-3 border-t border-[var(--card-border)]">
                           <div className="flex justify-between items-center text-xs">
                             <span className="text-slate-400">Balance:</span>
                             {isLoadingBalances ? (
-                              <span className="text-cyan-400 font-mono animate-pulse">Syncing...</span>
+                              <span className="text-blue-400 font-mono animate-pulse">Syncing...</span>
                             ) : (
                               <span className="text-white font-bold font-mono">
                                 {balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })} {walletType}
@@ -518,31 +518,28 @@ export default function Dashboard() {
           <div className="space-y-8">
             
             {/* Wealth Overview Card */}
-            <div className="glass-panel p-8 rounded-3xl border-slate-800 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-[400px] h-[200px] bg-gradient-to-l from-cyan-500/10 via-blue-500/5 to-transparent blur-3xl pointer-events-none" />
-              
+            <div className="solid-panel p-8 rounded-2xl relative overflow-hidden">
               <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
                 <div>
-                  <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-cyan-400 mb-1">
-                    <Shield size={14} /> Consolidated Sovereign Valuation
+                  <div className="flex items-center gap-2 text-xs font-mono tracking-wider text-slate-400 mb-1">
+                    <Shield size={14} className="text-blue-500" /> Total Balance
                   </div>
                   <h2 className="text-4xl sm:text-5xl font-extrabold text-white font-mono tracking-tight">
                     ${((balanceData?.totalBalance || 0) + (balanceData?.xrpBalance?.usdValue || 0)).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1 flex items-center gap-2">
-                    <span className="text-emerald-400 font-medium flex items-center gap-0.5">
-                      <TrendingUp size={13} /> +100% Cryptographic Backing
+                  <p className="text-xs text-slate-400 mt-2 flex items-center gap-2">
+                    <span className="text-emerald-500 font-medium flex items-center gap-0.5">
+                      <TrendingUp size={13} /> Secured & Backed
                     </span>
-                    <span>• Proof of Reserves SLA Guaranteed</span>
                   </p>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-mono px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-emerald-400 flex items-center gap-1.5">
-                    <CheckCircle2 size={13} /> Reserve Proof Active
+                  <span className="text-xs font-mono px-3 py-1.5 rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-emerald-500 flex items-center gap-1.5">
+                    <CheckCircle2 size={13} /> Verified
                   </span>
                   {balanceData?.xrpBalance?.total > 0 && (
-                    <span className="text-xs font-mono px-3 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-500/30 text-cyan-300">
+                    <span className="text-xs font-mono px-3 py-1.5 rounded-lg bg-[var(--background)] border border-[var(--card-border)] text-blue-400">
                       XRP: {balanceData.xrpBalance.total.toFixed(2)} (${balanceData.xrpBalance.usdValue?.toFixed(2) || '0.00'})
                     </span>
                   )}
@@ -550,56 +547,56 @@ export default function Dashboard() {
               </div>
 
               {/* Action Buttons */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-slate-800/80">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-[var(--card-border)]">
                 <button 
                   onClick={() => handleTabChange('send')}
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 px-4 py-3 rounded-2xl font-bold text-xs shadow-lg shadow-cyan-500/20 transition-all hover:scale-[1.02]"
+                  className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-xl font-bold text-xs transition-colors"
                 >
                   <ArrowUpRight size={16} />
-                  <span>Send Asset</span>
+                  <span>Send</span>
                 </button>
                 <button 
                   onClick={() => handleTabChange('receive')}
-                  className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white border border-slate-800 hover:border-slate-700 px-4 py-3 rounded-2xl font-semibold text-xs transition-all hover:scale-[1.02]"
+                  className="flex items-center justify-center gap-2 bg-[var(--background)] hover:bg-slate-800 text-white border border-[var(--card-border)] px-4 py-3 rounded-xl font-semibold text-xs transition-colors"
                 >
-                  <ArrowLeftCircle size={16} className="text-emerald-400" />
+                  <ArrowLeftCircle size={16} className="text-emerald-500" />
                   <span>Receive</span>
                 </button>
                 <button 
                   onClick={() => handleTabChange('buy')}
-                  className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white border border-slate-800 hover:border-slate-700 px-4 py-3 rounded-2xl font-semibold text-xs transition-all hover:scale-[1.02]"
+                  className="flex items-center justify-center gap-2 bg-[var(--background)] hover:bg-slate-800 text-white border border-[var(--card-border)] px-4 py-3 rounded-xl font-semibold text-xs transition-colors"
                 >
-                  <CreditCard size={16} className="text-purple-400" />
-                  <span>Fiat On-Ramp</span>
+                  <CreditCard size={16} className="text-blue-500" />
+                  <span>Buy</span>
                 </button>
                 <button 
                   onClick={() => handleTabChange('link')}
-                  className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white border border-slate-800 hover:border-slate-700 px-4 py-3 rounded-2xl font-semibold text-xs transition-all hover:scale-[1.02]"
+                  className="flex items-center justify-center gap-2 bg-[var(--background)] hover:bg-slate-800 text-white border border-[var(--card-border)] px-4 py-3 rounded-xl font-semibold text-xs transition-colors"
                 >
-                  <Wallet size={16} className="text-cyan-400" />
+                  <Wallet size={16} className="text-blue-500" />
                   <span>Link Wallet</span>
                 </button>
               </div>
             </div>
 
             {/* Market Overview Live Matrix */}
-            <div className="glass-panel rounded-3xl border-slate-800 shadow-2xl p-6">
+            <div className="solid-panel rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h3 className="text-lg font-bold text-white tracking-tight">Real-Time Market Indexes</h3>
-                  <p className="text-xs text-slate-400">Live consensus pricing synced across major decentralized liquidity nodes</p>
+                  <h3 className="text-lg font-bold text-white tracking-tight">Market Prices</h3>
+                  <p className="text-xs text-slate-400">Live feed from major exchanges</p>
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
-                  <Activity size={14} className="text-cyan-400 animate-pulse" />
+                  <Activity size={14} className="text-blue-500 animate-pulse" />
                   <span>Live Feed</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                 {cryptoList.map((crypto) => (
                   <div 
                     key={crypto.id} 
-                    className="bg-slate-900/60 border border-slate-800/80 p-4 rounded-2xl hover:border-cyan-500/40 hover:bg-slate-800/60 transition-all"
+                    className="bg-[var(--background)] border border-[var(--card-border)] p-4 rounded-xl hover:border-blue-500 transition-colors"
                   >
                     <div className="flex items-center gap-2.5 mb-3">
                       <img 
@@ -615,7 +612,7 @@ export default function Dashboard() {
                     {cryptoData && cryptoData[crypto.id] ? (
                       renderCryptoBalance(crypto)
                     ) : (
-                      <div className="animate-pulse space-y-2 pt-2 border-t border-slate-800">
+                      <div className="animate-pulse space-y-2 pt-2 border-t border-[var(--card-border)]">
                         <div className="h-4 bg-slate-800 rounded w-full" />
                         <div className="h-3 bg-slate-800 rounded w-2/3" />
                       </div>
@@ -627,15 +624,15 @@ export default function Dashboard() {
 
             {/* Quick Wallets Summary */}
             {walletState.wallets.length > 0 && (
-              <div className="glass-panel rounded-3xl border-slate-800 shadow-2xl p-6">
+              <div className="solid-panel rounded-2xl p-6">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <h3 className="text-lg font-bold text-white tracking-tight">Active Connected Ledgers</h3>
-                    <p className="text-xs text-slate-400">Primary external vaults linked to your sovereign account</p>
+                    <h3 className="text-lg font-bold text-white tracking-tight">Active Connected Wallets</h3>
+                    <p className="text-xs text-slate-400">External wallets linked to your account</p>
                   </div>
                   <button 
                     onClick={() => handleTabChange('wallets')}
-                    className="text-cyan-400 hover:text-cyan-300 text-xs font-semibold flex items-center gap-1 transition-colors"
+                    className="text-blue-500 hover:text-blue-400 text-xs font-semibold flex items-center gap-1 transition-colors"
                   >
                     <span>View All ({walletState.wallets.length})</span>
                     <ChevronRight size={14} />
@@ -650,20 +647,20 @@ export default function Dashboard() {
                     return (
                       <div 
                         key={wallet.walletAddress || index} 
-                        className="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl hover:border-slate-700 transition-all"
+                        className="bg-[var(--background)] border border-[var(--card-border)] p-4 rounded-xl hover:border-blue-500 transition-colors"
                       >
                         <div className="flex items-center gap-3 mb-3">
-                          <div className="w-8 h-8 bg-cyan-500/10 border border-cyan-500/20 rounded-xl flex items-center justify-center">
-                            <Wallet className="text-cyan-400" size={16} />
+                          <div className="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                            <Wallet className="text-blue-500" size={16} />
                           </div>
                           <div className="overflow-hidden">
-                            <h4 className="text-white font-bold text-xs truncate">{walletType || 'External'} Ledger</h4>
+                            <h4 className="text-white font-bold text-xs truncate">{walletType || 'External Wallet'}</h4>
                             <p className="text-slate-400 text-[10px] font-mono truncate">
                               {wallet.walletAddress || 'Verified'}
                             </p>
                           </div>
                         </div>
-                        <div className="flex justify-between items-center text-xs pt-2 border-t border-slate-800/80">
+                        <div className="flex justify-between items-center text-xs pt-2 border-t border-[var(--card-border)]">
                           <span className="text-slate-400 text-[11px]">Balance:</span>
                           <span className="text-white font-bold font-mono">
                             {balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 6 })} {walletType}
@@ -682,45 +679,38 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 font-sans selection:bg-cyan-500/30 selection:text-white relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--background)] text-slate-100 font-sans selection:bg-blue-500/30 selection:text-white flex">
       <Toaster position="top-center" />
       
-      <Navbar 
+      <Sidebar 
         selectedTab={selectedTab} 
         setSelectedTab={setSelectedTab} 
-        isMenuOpen={isMenuOpen} 
-        setIsMenuOpen={setIsMenuOpen} 
       />
-      
-      {/* Background glow effects */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[900px] h-[400px] bg-cyan-500/5 blur-[160px] rounded-full" />
-      </div>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+      <main className="flex-1 ml-64 p-8 min-h-screen overflow-y-auto">
         
         {/* Welcome Header */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-slate-900/50 border border-slate-800/80 p-6 rounded-3xl backdrop-blur-xl">
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 bg-[var(--card-bg)] border border-[var(--card-border)] p-6 rounded-2xl">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-cyan-400 mb-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Terminal Session Verified
+            <div className="flex items-center gap-2 text-xs font-mono tracking-wider text-slate-400 mb-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Session Verified
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Welcome, {userInfo.firstName || 'Sovereign Holder'}
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              Welcome, {userInfo.firstName || 'User'}
             </h1>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Quantum Financial Ledger Protocol • <span className="font-mono">{userInfo.email}</span>
+            <p className="text-xs text-slate-400 mt-1">
+              QFS Ledger • <span className="font-mono">{userInfo.email}</span>
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <span className={`text-xs px-3.5 py-1.5 rounded-xl font-medium flex items-center gap-1.5 ${
+            <span className={`text-xs px-3.5 py-1.5 rounded-lg font-medium flex items-center gap-1.5 ${
               userInfo.isVerified 
                 ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400' 
                 : 'bg-yellow-500/10 border border-yellow-500/30 text-yellow-400'
             }`}>
               <CheckCircle2 size={14} />
-              {userInfo.isVerified ? 'Cryptographically Verified' : 'Standard Tier'}
+              {userInfo.isVerified ? 'Verified Account' : 'Standard Account'}
             </span>
           </div>
         </header>

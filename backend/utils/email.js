@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 const sendEmail = async (to, subject, html) => {
   try {
     const emailConfig = {
-      from: `"Quantum Finance Ledger" <${process.env.EMAIL_USER}>`,
+      from: `"QFS Ledger" <${process.env.EMAIL_USER}>`,
       to,
       subject,
       html

