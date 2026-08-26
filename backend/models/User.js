@@ -116,7 +116,6 @@ const userSchema = new mongoose.Schema({
     walletAddress: String,
     type: {
       type: String,
-      enum: ['Bitcoin', 'Ethereum', 'Ripple', 'Stellar', 'Unknown'],
       default: 'Unknown'
     }
   }]

