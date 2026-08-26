@@ -5,6 +5,17 @@ import { useAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import { api } from '@/utils/api';
+import { Shield, Lock, Mail, KeyRound, User, Phone, Globe, ArrowRight, CheckCircle2 } from 'lucide-react';
+
+const countries = [
+  "United States", "United Kingdom", "Canada", "Australia", "Germany", "France", "Switzerland", 
+  "Singapore", "United Arab Emirates", "Japan", "Netherlands", "Hong Kong", "South Korea", 
+  "Sweden", "Norway", "Denmark", "Finland", "Austria", "Belgium", "Ireland", "New Zealand", 
+  "Spain", "Italy", "Portugal", "Poland", "Czech Republic", "South Africa", "Brazil", "Mexico", 
+  "Argentina", "Chile", "Colombia", "India", "Indonesia", "Malaysia", "Thailand", "Vietnam", 
+  "Philippines", "Saudi Arabia", "Qatar", "Kuwait", "Bahrain", "Oman", "Israel", "Turkey", 
+  "Greece", "Cyprus", "Estonia", "Latvia", "Lithuania", "Luxembourg", "Malta", "Monaco", "Iceland"
+];
 
 export default function Signup() {
   const router = useRouter();
@@ -12,31 +23,15 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const auth = useAuth();
-   const signup = async (email, password, firstName, lastName, username, country, phoneNumber) => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await api.signup(email, password, firstName, lastName, username, country, phoneNumber);
-        
-        // Store token
-        localStorage.setItem('token', response.token);
-        setUser(response.user);
-        
-      } catch (err) {
-        setError(err.message);
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    };
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
-    username: '', // Add username
+    username: '',
     password: '',
     confirmPassword: '',
-    country: '',
+    country: 'United States',
     phoneNumber: '',
     terms: false
   });
@@ -56,10 +51,23 @@ export default function Signup() {
       toast.error('Passwords do not match');
       return;
     }
+    if (!formData.terms) {
+      toast.error('Please accept the Terms of Service to proceed');
+      return;
+    }
+
     try {
       setIsLoading(true);
-      const response = await api.signup(formData.email, formData.password, formData.firstName, formData.lastName, formData.username, formData.country, formData.phoneNumber);
-      toast.success('Signup successful! Please verify your email.');
+      const response = await api.signup(
+        formData.email, 
+        formData.password, 
+        formData.firstName, 
+        formData.lastName, 
+        formData.username, 
+        formData.country, 
+        formData.phoneNumber
+      );
+      toast.success('Account created! Please verify your email.');
       router.push(`/otp?email=${encodeURIComponent(formData.email)}`);
     } catch (error) {
       toast.error(error.message || 'Failed to sign up');
@@ -69,420 +77,277 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-black font-sans flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#030712] font-sans flex items-center justify-center p-4 py-12 relative overflow-hidden">
       <Toaster position="top-center" />
-      <div className="max-w-md w-full space-y-8 p-8 bg-white/5 rounded-2xl border border-white/10">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-white">Create an account</h2>
-          <p className="mt-2 text-gray-400">Join QFS Ledger today</p>
+      
+      {/* Background glow */}
+      <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-cyan-500/10 blur-[140px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[5%] right-1/4 w-[500px] h-[300px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none" />
+
+      <div className="max-w-xl w-full relative z-10">
+        
+        {/* Header Branding */}
+        <div className="text-center mb-8">
+          <div 
+            onClick={() => router.push('/')}
+            className="inline-flex items-center gap-2 cursor-pointer mb-4 group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-[1px] shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
+                <Shield className="w-5 h-5 text-cyan-400" />
+              </div>
+            </div>
+            <span className="text-xl font-bold tracking-tight text-white">Quantum <span className="text-cyan-400">Ledger</span></span>
+          </div>
+          
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Open Sovereign Ledger Account</h2>
+          <p className="mt-2 text-sm text-slate-400">Institutional grade multi-asset ledger with zero-knowledge security</p>
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+        {/* Glass Form Card */}
+        <div className="glass-panel rounded-3xl p-8 border-slate-800 shadow-2xl relative">
+          
+          <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-800/80 text-xs text-slate-400">
+            <span className="flex items-center gap-1.5 text-cyan-400 font-mono">
+              <Lock className="w-3.5 h-3.5" /> End-to-End Cryptographic Onboarding
+            </span>
+            <span className="text-emerald-400 flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Instant Verification
+            </span>
+          </div>
+
+          <form className="space-y-4" onSubmit={handleSubmit}>
+            
+            {/* Names */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium text-gray-300" htmlFor="firstName">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5" htmlFor="firstName">
                   First Name
                 </label>
-                <input
-                  id="firstName"
-                  name="firstName"
-                  type="text"
-                  required
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
-                  placeholder="First name"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    type="text"
+                    required
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    className="w-full pl-9 pr-3 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                    placeholder="E.g. Alexander"
+                  />
+                </div>
               </div>
+
               <div>
-                <label className="text-sm font-medium text-gray-300" htmlFor="lastName">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5" htmlFor="lastName">
                   Last Name
                 </label>
-                <input
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  required
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
-                  placeholder="Last name"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <User className="w-4 h-4" />
+                  </div>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    required
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    className="w-full pl-9 pr-3 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                    placeholder="Vance"
+                  />
+                </div>
               </div>
             </div>
-            <div>
-              <label className="text-sm font-medium text-gray-300" htmlFor="username">
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                required
-                value={formData.username}
-                onChange={handleChange}
-                className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="Choose a username"
-              />
+
+            {/* Username & Country */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5" htmlFor="username">
+                  Ledger Username
+                </label>
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  value={formData.username}
+                  onChange={handleChange}
+                  className="w-full px-3.5 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                  placeholder="alex_vance"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5" htmlFor="country">
+                  Jurisdiction / Country
+                </label>
+                <div className="relative">
+                  <select
+                    id="country"
+                    name="country"
+                    required
+                    value={formData.country}
+                    onChange={handleChange}
+                    className="w-full px-3.5 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-white text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all appearance-none cursor-pointer"
+                  >
+                    {countries.map((c, i) => (
+                      <option key={i} value={c} className="bg-slate-900 text-white">{c}</option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-500">
+                    <Globe className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="text-sm font-medium text-gray-300" htmlFor="country">
-                Country
+
+            {/* Email & Phone */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5" htmlFor="email">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="w-full pl-9 pr-3 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                    placeholder="alex@institution.com"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5" htmlFor="phoneNumber">
+                  Phone Number
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <input
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    type="tel"
+                    required
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    className="w-full pl-9 pr-3 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                    placeholder="+1 (555) 000-0000"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Passwords */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5" htmlFor="password">
+                  Master Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <KeyRound className="w-4 h-4" />
+                  </div>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full pl-9 pr-3 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                    placeholder="••••••••••••"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5" htmlFor="confirmPassword">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                    <KeyRound className="w-4 h-4" />
+                  </div>
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    required
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="w-full pl-9 pr-3 py-2.5 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                    placeholder="••••••••••••"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Terms checkbox */}
+            <div className="pt-2">
+              <label className="flex items-start gap-2.5 text-xs text-slate-400 cursor-pointer select-none">
+                <input
+                  id="terms"
+                  name="terms"
+                  type="checkbox"
+                  checked={formData.terms}
+                  onChange={handleChange}
+                  className="mt-0.5 rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-0 focus:ring-offset-0"
+                />
+                <span>
+                  I acknowledge and agree to the Quantum Financial Ledger{' '}
+                  <span className="text-cyan-400 hover:underline">Terms of Custody</span> and{' '}
+                  <span className="text-cyan-400 hover:underline">Cryptographic Security Protocols</span>.
+                </span>
               </label>
-              <select
-                id="country"
-                name="country"
-                required
-                value={formData.country}
-                onChange={handleChange}
-                className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
+            </div>
+
+            {/* Submit Button */}
+            <div className="pt-3">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01]"
               >
-                <option value="Afghanistan">Afghanistan</option>
-                <option value="Åland Islands">Åland Islands</option>
-                <option value="Albania">Albania</option>
-                <option value="Algeria">Algeria</option>
-                <option value="American Samoa">American Samoa</option>
-                <option value="Andorra">Andorra</option>
-                <option value="Angola">Angola</option>
-                <option value="Anguilla">Anguilla</option>
-                <option value="Antarctica">Antarctica</option>
-                <option value="Antigua and Barbuda">Antigua and Barbuda</option>
-                <option value="Argentina">Argentina</option>
-                <option value="Armenia">Armenia</option>
-                <option value="Aruba">Aruba</option>
-                <option value="Australia">Australia</option>
-                <option value="Austria">Austria</option>
-                <option value="Azerbaijan">Azerbaijan</option>
-                <option value="Bahamas">Bahamas</option>
-                <option value="Bahrain">Bahrain</option>
-                <option value="Bangladesh">Bangladesh</option>
-                <option value="Barbados">Barbados</option>
-                <option value="Belarus">Belarus</option>
-                <option value="Belgium">Belgium</option>
-                <option value="Belize">Belize</option>
-                <option value="Benin">Benin</option>
-                <option value="Bermuda">Bermuda</option>
-                <option value="Bhutan">Bhutan</option>
-                <option value="Bolivia">Bolivia</option>
-                <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
-                <option value="Botswana">Botswana</option>
-                <option value="Bouvet Island">Bouvet Island</option>
-                <option value="Brazil">Brazil</option>
-                <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
-                <option value="Brunei Darussalam">Brunei Darussalam</option>
-                <option value="Bulgaria">Bulgaria</option>
-                <option value="Burkina Faso">Burkina Faso</option>
-                <option value="Burundi">Burundi</option>
-                <option value="Cambodia">Cambodia</option>
-                <option value="Cameroon">Cameroon</option>
-                <option value="Canada">Canada</option>
-                <option value="Cape Verde">Cape Verde</option>
-                <option value="Cayman Islands">Cayman Islands</option>
-                <option value="Central African Republic">Central African Republic</option>
-                <option value="Chad">Chad</option>
-                <option value="Chile">Chile</option>
-                <option value="China">China</option>
-                <option value="Christmas Island">Christmas Island</option>
-                <option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
-                <option value="Colombia">Colombia</option>
-                <option value="Comoros">Comoros</option>
-                <option value="Congo">Congo</option>
-                <option value="Congo, The Democratic Republic of The">Congo, The Democratic Republic of The</option>
-                <option value="Cook Islands">Cook Islands</option>
-                <option value="Costa Rica">Costa Rica</option>
-                <option value="Cote D'ivoire">Cote D'ivoire</option>
-                <option value="Croatia">Croatia</option>
-                <option value="Cuba">Cuba</option>
-                <option value="Cyprus">Cyprus</option>
-                <option value="Czech Republic">Czech Republic</option>
-                <option value="Denmark">Denmark</option>
-                <option value="Djibouti">Djibouti</option>
-                <option value="Dominica">Dominica</option>
-                <option value="Dominican Republic">Dominican Republic</option>
-                <option value="Ecuador">Ecuador</option>
-                <option value="Egypt">Egypt</option>
-                <option value="El Salvador">El Salvador</option>
-                <option value="Equatorial Guinea">Equatorial Guinea</option>
-                <option value="Eritrea">Eritrea</option>
-                <option value="Estonia">Estonia</option>
-                <option value="Ethiopia">Ethiopia</option>
-                <option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
-                <option value="Faroe Islands">Faroe Islands</option>
-                <option value="Fiji">Fiji</option>
-                <option value="Finland">Finland</option>
-                <option value="France">France</option>
-                <option value="French Guiana">French Guiana</option>
-                <option value="French Polynesia">French Polynesia</option>
-                <option value="French Southern Territories">French Southern Territories</option>
-                <option value="Gabon">Gabon</option>
-                <option value="Gambia">Gambia</option>
-                <option value="Georgia">Georgia</option>
-                <option value="Germany">Germany</option>
-                <option value="Ghana">Ghana</option>
-                <option value="Gibraltar">Gibraltar</option>
-                <option value="Greece">Greece</option>
-                <option value="Greenland">Greenland</option>
-                <option value="Grenada">Grenada</option>
-                <option value="Guadeloupe">Guadeloupe</option>
-                <option value="Guam">Guam</option>
-                <option value="Guatemala">Guatemala</option>
-                <option value="Guernsey">Guernsey</option>
-                <option value="Guinea">Guinea</option>
-                <option value="Guinea-bissau">Guinea-bissau</option>
-                <option value="Guyana">Guyana</option>
-                <option value="Haiti">Haiti</option>
-                <option value="Heard Island and Mcdonald Islands">Heard Island and Mcdonald Islands</option>
-                <option value="Holy See (Vatican City State)">Holy See (Vatican City State)</option>
-                <option value="Honduras">Honduras</option>
-                <option value="Hong Kong">Hong Kong</option>
-                <option value="Hungary">Hungary</option>
-                <option value="Iceland">Iceland</option>
-                <option value="India">India</option>
-                <option value="Indonesia">Indonesia</option>
-                <option value="Iran, Islamic Republic of">Iran, Islamic Republic of</option>
-                <option value="Iraq">Iraq</option>
-                <option value="Ireland">Ireland</option>
-                <option value="Isle of Man">Isle of Man</option>
-                <option value="Israel">Israel</option>
-                <option value="Italy">Italy</option>
-                <option value="Jamaica">Jamaica</option>
-                <option value="Japan">Japan</option>
-                <option value="Jersey">Jersey</option>
-                <option value="Jordan">Jordan</option>
-                <option value="Kazakhstan">Kazakhstan</option>
-                <option value="Kenya">Kenya</option>
-                <option value="Kiribati">Kiribati</option>
-                <option value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</option>
-                <option value="Korea, Republic of">Korea, Republic of</option>
-                <option value="Kuwait">Kuwait</option>
-                <option value="Kyrgyzstan">Kyrgyzstan</option>
-                <option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
-                <option value="Latvia">Latvia</option>
-                <option value="Lebanon">Lebanon</option>
-                <option value="Lesotho">Lesotho</option>
-                <option value="Liberia">Liberia</option>
-                <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
-                <option value="Liechtenstein">Liechtenstein</option>
-                <option value="Lithuania">Lithuania</option>
-                <option value="Luxembourg">Luxembourg</option>
-                <option value="Macao">Macao</option>
-                <option value="Macedonia, The Former Yugoslav Republic of">Macedonia, The Former Yugoslav Republic of</option>
-                <option value="Madagascar">Madagascar</option>
-                <option value="Malawi">Malawi</option>
-                <option value="Malaysia">Malaysia</option>
-                <option value="Maldives">Maldives</option>
-                <option value="Mali">Mali</option>
-                <option value="Malta">Malta</option>
-                <option value="Marshall Islands">Marshall Islands</option>
-                <option value="Martinique">Martinique</option>
-                <option value="Mauritania">Mauritania</option>
-                <option value="Mauritius">Mauritius</option>
-                <option value="Mayotte">Mayotte</option>
-                <option value="Mexico">Mexico</option>
-                <option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
-                <option value="Moldova, Republic of">Moldova, Republic of</option>
-                <option value="Monaco">Monaco</option>
-                <option value="Mongolia">Mongolia</option>
-                <option value="Montenegro">Montenegro</option>
-                <option value="Montserrat">Montserrat</option>
-                <option value="Morocco">Morocco</option>
-                <option value="Mozambique">Mozambique</option>
-                <option value="Myanmar">Myanmar</option>
-                <option value="Namibia">Namibia</option>
-                <option value="Nauru">Nauru</option>
-                <option value="Nepal">Nepal</option>
-                <option value="Netherlands">Netherlands</option>
-                <option value="Netherlands Antilles">Netherlands Antilles</option>
-                <option value="New Caledonia">New Caledonia</option>
-                <option value="New Zealand">New Zealand</option>
-                <option value="Nicaragua">Nicaragua</option>
-                <option value="Niger">Niger</option>
-                <option value="Nigeria">Nigeria</option>
-                <option value="Niue">Niue</option>
-                <option value="Norfolk Island">Norfolk Island</option>
-                <option value="Northern Mariana Islands">Northern Mariana Islands</option>
-                <option value="Norway">Norway</option>
-                <option value="Oman">Oman</option>
-                <option value="Pakistan">Pakistan</option>
-                <option value="Palau">Palau</option>
-                <option value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</option>
-                <option value="Panama">Panama</option>
-                <option value="Papua New Guinea">Papua New Guinea</option>
-                <option value="Paraguay">Paraguay</option>
-                <option value="Peru">Peru</option>
-                <option value="Philippines">Philippines</option>
-                <option value="Pitcairn">Pitcairn</option>
-                <option value="Poland">Poland</option>
-                <option value="Portugal">Portugal</option>
-                <option value="Puerto Rico">Puerto Rico</option>
-                <option value="Qatar">Qatar</option>
-                <option value="Reunion">Reunion</option>
-                <option value="Romania">Romania</option>
-                <option value="Russian Federation">Russian Federation</option>
-                <option value="Rwanda">Rwanda</option>
-                <option value="Saint Helena">Saint Helena</option>
-                <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
-                <option value="Saint Lucia">Saint Lucia</option>
-                <option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
-                <option value="Saint Vincent and The Grenadines">Saint Vincent and The Grenadines</option>
-                <option value="Samoa">Samoa</option>
-                <option value="San Marino">San Marino</option>
-                <option value="Sao Tome and Principe">Sao Tome and Principe</option>
-                <option value="Saudi Arabia">Saudi Arabia</option>
-                <option value="Senegal">Senegal</option>
-                <option value="Serbia">Serbia</option>
-                <option value="Seychelles">Seychelles</option>
-                <option value="Sierra Leone">Sierra Leone</option>
-                <option value="Singapore">Singapore</option>
-                <option value="Slovakia">Slovakia</option>
-                <option value="Slovenia">Slovenia</option>
-                <option value="Solomon Islands">Solomon Islands</option>
-                <option value="Somalia">Somalia</option>
-                <option value="South Africa">South Africa</option>
-                <option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
-                <option value="Spain">Spain</option>
-                <option value="Sri Lanka">Sri Lanka</option>
-                <option value="Sudan">Sudan</option>
-                <option value="Suriname">Suriname</option>
-                <option value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</option>
-                <option value="Swaziland">Swaziland</option>
-                <option value="Sweden">Sweden</option>
-                <option value="Switzerland">Switzerland</option>
-                <option value="Syrian Arab Republic">Syrian Arab Republic</option>
-                <option value="Taiwan">Taiwan</option>
-                <option value="Tajikistan">Tajikistan</option>
-                <option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
-                <option value="Thailand">Thailand</option>
-                <option value="Timor-leste">Timor-leste</option>
-                <option value="Togo">Togo</option>
-                <option value="Tokelau">Tokelau</option>
-                <option value="Tonga">Tonga</option>
-                <option value="Trinidad and Tobago">Trinidad and Tobago</option>
-                <option value="Tunisia">Tunisia</option>
-                <option value="Turkey">Turkey</option>
-                <option value="Turkmenistan">Turkmenistan</option>
-                <option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
-                <option value="Tuvalu">Tuvalu</option>
-                <option value="Uganda">Uganda</option>
-                <option value="Ukraine">Ukraine</option>
-                <option value="United Arab Emirates">United Arab Emirates</option>
-                <option value="United Kingdom">United Kingdom</option>
-                <option value="United States">United States</option>
-                <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
-                <option value="Uruguay">Uruguay</option>
-                <option value="Uzbekistan">Uzbekistan</option>
-                <option value="Vanuatu">Vanuatu</option>
-                <option value="Venezuela">Venezuela</option>
-                <option value="Viet Nam">Viet Nam</option>
-                <option value="Virgin Islands, British">Virgin Islands, British</option>
-                <option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
-                <option value="Wallis and Futuna">Wallis and Futuna</option>
-                <option value="Western Sahara">Western Sahara</option>
-                <option value="Yemen">Yemen</option>
-                <option value="Zambia">Zambia</option>
-                <option value="Zimbabwe">Zimbabwe</option>
-                {/* Add more countries as needed */}
-              </select>
+                {isLoading ? (
+                  <span>Generating Quantum Vault Account...</span>
+                ) : (
+                  <>
+                    <span>Initialize Ledger Account</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
+              </button>
             </div>
-            <div>
-              <label className="text-sm font-medium text-gray-300" htmlFor="phoneNumber">
-                Phone Number
-              </label>
-              <input
-                id="phoneNumber"
-                name="phoneNumber"
-                type="tel"
-                required
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="Enter your phone number"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-300" htmlFor="email">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="Enter your email"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-300" htmlFor="password">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="Create a password"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-300" htmlFor="confirmPassword">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="Confirm your password"
-              />
-            </div>
-          </div>
+          </form>
 
-          <div className="flex items-center">
-            <input
-              id="terms"
-              name="terms"
-              type="checkbox"
-              checked={formData.terms}
-              onChange={handleChange}
-              className="h-4 w-4 rounded border-gray-600 bg-white/5 text-white focus:ring-white/20"
-            />
-            <label htmlFor="terms" className="ml-2 block text-sm text-gray-400">
-              I agree to the{' '}
-              <Link href="/terms" className="text-white hover:text-gray-200">
-                Terms of Service
-              </Link>
-              {' '}and{' '}
-              <Link href="/privacy" className="text-white hover:text-gray-200">
-                Privacy Policy
-              </Link>
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3 px-4 rounded-full bg-white text-black hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Creating account...' : 'Create account'}
-          </button>
-
-          <p className="text-center text-sm text-gray-400">
-            Already have an account?{' '}
-            <Link href="/login" className="text-white hover:text-gray-200">
-              Sign in
+          {/* Card footer */}
+          <div className="mt-6 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-400">
+            Already have an active ledger account?{' '}
+            <Link href="/login" className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
+              Sign In
             </Link>
-          </p>
-        </form>
+          </div>
+        </div>
+
+        {/* Security badge */}
+        <div className="mt-6 text-center text-[11px] text-slate-500 flex items-center justify-center gap-2">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <span>FIPS 140-3 Cryptographic Core • Zero Knowledge KYC Verification</span>
+        </div>
+
       </div>
     </div>
   );

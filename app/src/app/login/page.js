@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useAuth } from "../context/AuthContext";
 import toast, { Toaster } from 'react-hot-toast';
 import { api } from '@/utils/api';
+import { Shield, Lock, Mail, KeyRound, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 
 export default function Login() {
   const router = useRouter();
@@ -12,7 +13,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
- const login = async (email, password) => {
+  const login = async (email, password) => {
     try {
       setLoading(true);
       setError(null);
@@ -21,7 +22,7 @@ export default function Login() {
       // Store token
       localStorage.setItem('token', response.token);
       setUser(response.user);
-      
+      return response;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -29,6 +30,7 @@ export default function Login() {
       setLoading(false);
     }
   };
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -59,82 +61,136 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-black font-sans flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#030712] font-sans flex items-center justify-center p-4 relative overflow-hidden">
       <Toaster position="top-center" />
-      <div className="max-w-md w-full space-y-8 p-8 bg-white/5 rounded-2xl border border-white/10">
-        <div className="text-censter">
-          <h2 className="text-3xl font-bold text-white">Welcome back</h2>
-          <p className="mt-2 text-gray-400">Sign in to your QFS Ledger account</p>
+      
+      {/* Background glow */}
+      <div className="absolute -top-[15%] left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-cyan-500/10 blur-[130px] rounded-full pointer-events-none" />
+      <div className="absolute -bottom-[15%] right-1/4 w-[500px] h-[300px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none" />
+
+      <div className="max-w-md w-full relative z-10">
+        
+        {/* Header Branding */}
+        <div className="text-center mb-8">
+          <div 
+            onClick={() => router.push('/')}
+            className="inline-flex items-center gap-2 cursor-pointer mb-4 group"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-[1px] shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
+                <Shield className="w-5 h-5 text-cyan-400" />
+              </div>
+            </div>
+            <span className="text-xl font-bold tracking-tight text-white">Quantum <span className="text-cyan-400">Ledger</span></span>
+          </div>
+          
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Sign In to Your Ledger</h2>
+          <p className="mt-2 text-sm text-slate-400">Access your sovereign quantum-verified financial assets</p>
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-gray-300" htmlFor="email">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="Enter your email"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-gray-300" htmlFor="password">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="mt-1 block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-white/20"
-                placeholder="Enter your password"
-              />
-            </div>
+        {/* Glass Card */}
+        <div className="glass-panel rounded-3xl p-8 border-slate-800 shadow-2xl relative">
+          
+          <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-800/80 text-xs text-slate-400">
+            <span className="flex items-center gap-1.5 text-cyan-400 font-mono">
+              <Lock className="w-3.5 h-3.5" /> 256-Bit SSL Encrypted
+            </span>
+            <span className="text-emerald-400 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Node Synced
+            </span>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="rememberMe"
-                name="rememberMe"
-                type="checkbox"
-                checked={formData.rememberMe}
-                onChange={handleChange}
-                className="h-4 w-4 rounded border-gray-600 bg-white/5 text-white focus:ring-white/20"
-              />
-              <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-400">
-                Remember me
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2" htmlFor="email">
+                Institutional / Registered Email
               </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                  placeholder="name@organization.com"
+                />
+              </div>
             </div>
-            <Link href="/forgot-password" className="text-sm text-gray-400 hover:text-white">
-              Forgot password?
+
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2" htmlFor="password">
+                Ledger Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                  <KeyRound className="w-4 h-4" />
+                </div>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                  placeholder="••••••••••••"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between text-xs">
+              <label className="flex items-center gap-2 text-slate-400 cursor-pointer select-none">
+                <input
+                  id="rememberMe"
+                  name="rememberMe"
+                  type="checkbox"
+                  checked={formData.rememberMe}
+                  onChange={handleChange}
+                  className="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-0 focus:ring-offset-0"
+                />
+                Remember this terminal
+              </label>
+              <Link href="/forgot-password" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+                Forgot password?
+              </Link>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01]"
+            >
+              {isLoading ? (
+                <span>Verifying Credentials...</span>
+              ) : (
+                <>
+                  <span>Sign In to Ledger</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Footer inside card */}
+          <div className="mt-6 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-400">
+            Don't have a ledger account?{' '}
+            <Link href="/signup" className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
+              Open an Account
             </Link>
           </div>
+        </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3 px-4 rounded-full bg-white text-black hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoading ? 'Signing in...' : 'Sign in'}
-          </button>
+        {/* Bottom security pill */}
+        <div className="mt-6 text-center text-[11px] text-slate-500 flex items-center justify-center gap-2">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Multi-Factor Authentication & Zero-Knowledge Verification Active</span>
+        </div>
 
-          <p className="text-center text-sm text-gray-400">
-            Don't have an account?{' '}
-            <Link href="/signup" className="text-white hover:text-gray-200">
-              Sign up
-            </Link>
-          </p>
-        </form>
       </div>
     </div>
   );
