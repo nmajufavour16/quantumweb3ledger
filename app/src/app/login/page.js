@@ -61,11 +61,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] font-sans flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--background)] font-sans flex items-center justify-center p-4 relative overflow-hidden">
       <Toaster position="top-center" />
       
       {/* Background glow */}
-      <div className="absolute -top-[15%] left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-cyan-500/10 blur-[130px] rounded-full pointer-events-none" />
+      <div className="absolute -top-[15%] left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-blue-600/10 blur-[130px] rounded-full pointer-events-none" />
       <div className="absolute -bottom-[15%] right-1/4 w-[500px] h-[300px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none" />
 
       <div className="max-w-md w-full relative z-10">
@@ -76,23 +76,23 @@ export default function Login() {
             onClick={() => router.push('/')}
             className="inline-flex items-center gap-2 cursor-pointer mb-4 group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-[1px] shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
-                <Shield className="w-5 h-5 text-cyan-400" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 to-blue-700 p-[1px] shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-[var(--card-bg)] rounded-[11px] flex items-center justify-center">
+                <Shield className="w-5 h-5 text-blue-400" />
               </div>
             </div>
-            <span className="text-xl font-bold tracking-tight text-white">Quantum <span className="text-cyan-400">Ledger</span></span>
+            <span className="text-xl font-bold tracking-tight text-white">QFS <span className="text-blue-400">Ledger</span></span>
           </div>
           
           <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Sign In to Your Ledger</h2>
           <p className="mt-2 text-sm text-slate-400">Access your sovereign quantum-verified financial assets</p>
         </div>
         
-        {/* Glass Card */}
-        <div className="glass-panel rounded-3xl p-8 border-slate-800 shadow-2xl relative">
+        {/* Solid Card */}
+        <div className="solid-panel rounded-3xl p-8 shadow-2xl relative">
           
-          <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-800/80 text-xs text-slate-400">
-            <span className="flex items-center gap-1.5 text-cyan-400 font-mono">
+          <div className="flex items-center justify-between pb-4 mb-6 border-b border-[var(--card-border)] text-xs text-slate-400">
+            <span className="flex items-center gap-1.5 text-blue-400 font-mono">
               <Lock className="w-3.5 h-3.5" /> 256-Bit SSL Encrypted
             </span>
             <span className="text-emerald-400 flex items-center gap-1">
@@ -116,7 +116,7 @@ export default function Login() {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-[var(--background)] border border-[var(--card-border)] rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-all"
                   placeholder="name@organization.com"
                 />
               </div>
@@ -137,7 +137,7 @@ export default function Login() {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-800 rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/30 transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-[var(--background)] border border-[var(--card-border)] rounded-xl text-white placeholder:text-slate-600 text-sm focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-all"
                   placeholder="••••••••••••"
                 />
               </div>
@@ -151,11 +151,11 @@ export default function Login() {
                   type="checkbox"
                   checked={formData.rememberMe}
                   onChange={handleChange}
-                  className="rounded border-slate-700 bg-slate-900 text-cyan-500 focus:ring-0 focus:ring-offset-0"
+                  className="rounded border-[var(--card-border)] bg-[var(--background)] text-blue-500 focus:ring-0 focus:ring-offset-0"
                 />
                 Remember this terminal
               </label>
-              <Link href="/forgot-password" className="text-cyan-400 hover:text-cyan-300 font-medium transition-colors">
+              <Link href="/forgot-password" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
                 Forgot password?
               </Link>
             </div>
@@ -163,7 +163,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/25 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01]"
+              className="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-lg shadow-blue-500/25 transition-all flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed hover:scale-[1.01]"
             >
               {isLoading ? (
                 <span>Verifying Credentials...</span>
@@ -177,9 +177,9 @@ export default function Login() {
           </form>
 
           {/* Footer inside card */}
-          <div className="mt-6 pt-6 border-t border-slate-800/80 text-center text-xs text-slate-400">
+          <div className="mt-6 pt-6 border-t border-[var(--card-border)] text-center text-xs text-slate-400">
             Don't have a ledger account?{' '}
-            <Link href="/signup" className="text-cyan-400 hover:text-cyan-300 font-semibold transition-colors">
+            <Link href="/signup" className="text-blue-400 hover:text-blue-300 font-semibold transition-colors">
               Open an Account
             </Link>
           </div>
