@@ -10,7 +10,9 @@ import {
   X,
   CheckCircle2,
   BarChart3,
-  Globe2
+  Globe2,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { useState, useEffect } from 'react';
 
@@ -20,11 +22,57 @@ export default function Home() {
   const [activeFaq, setActiveFaq] = useState(null);
 
   const stats = [
-    { number: "$2.8B+", label: "Assets Tracked" },
-    { number: "99.99%", label: "Uptime" },
-    { number: "180+", label: "Supported Assets" },
-    { number: "24/7", label: "Security Monitoring" }
+    { value: 2.8, decimals: 1, prefix: "$", suffix: "B+", label: "Assets Tracked" },
+    { value: 99.99, decimals: 2, prefix: "", suffix: "%", label: "Uptime" },
+    { value: 180, decimals: 0, prefix: "", suffix: "+", label: "Supported Assets" },
+    { value: 24, decimals: 0, prefix: "", suffix: "/7", label: "Security Monitoring" }
   ];
+
+  const faqs = [
+    {
+      question: "How secure is QFS Ledger?",
+      answer: "We utilize military-grade encryption and secure cryptographic architectures. Your data and private keys are never exposed, ensuring maximum sovereignty over your digital wealth."
+    },
+    {
+      question: "Can I link multiple external wallets?",
+      answer: "Yes, you can securely link multiple wallets including MetaMask, TrustWallet, and Ledger hardware wallets to consolidate your portfolio view."
+    },
+    {
+      question: "Are there any hidden fees?",
+      answer: "No. Transparency is core to our ethos. Standard network gas fees apply for on-chain transactions, but QFS Ledger does not charge hidden management fees."
+    },
+    {
+      question: "What happens if I lose my Master Password?",
+      answer: "Because we prioritize user sovereignty, we cannot recover your Master Password. We strongly advise backing up your seed phrases and passwords in a secure, offline environment."
+    }
+  ];
+
+  function AnimatedCounter({ value, decimals = 0, prefix = "", suffix = "", duration = 2000 }) {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+      let startTime = null;
+      let animationFrame;
+      
+      const animate = (time) => {
+        if (!startTime) startTime = time;
+        const progress = Math.min((time - startTime) / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 4);
+        setCount(easeProgress * value);
+        
+        if (progress < 1) {
+          animationFrame = requestAnimationFrame(animate);
+        } else {
+          setCount(value);
+        }
+      };
+      
+      animationFrame = requestAnimationFrame(animate);
+      return () => cancelAnimationFrame(animationFrame);
+    }, [value, duration]);
+
+    return <>{prefix}{count.toFixed(decimals)}{suffix}</>;
+  }
 
   const [cryptoTicker, setCryptoTicker] = useState([
     { symbol: "BTC", id: "bitcoin", price: "---", change: "---" },
@@ -80,8 +128,11 @@ export default function Home() {
   ];
 
   return (
-    <div className="min-h-screen bg-[var(--background)] text-slate-100 font-sans selection:bg-blue-500/30 selection:text-white">
+    <div className="min-h-screen bg-[var(--background)] text-slate-100 font-sans selection:bg-blue-500/30 selection:text-white relative">
       
+      {/* Background Gradients */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/15 via-[var(--background)] to-[var(--background)] pointer-events-none" />
+
       {/* Navbar */}
       <nav className="border-b border-[var(--card-border)] bg-[var(--background)] sticky top-0 z-50">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -152,9 +203,10 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="py-24 container mx-auto px-6">
+      <section className="py-24 container mx-auto px-6 relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
-          <div className="lg:w-1/2 text-center lg:text-left space-y-8">
+          <div className="lg:w-1/2 text-center lg:text-left space-y-8 relative">
+            <div className="absolute -top-10 -left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl"></div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
               Manage your digital assets securely.
             </h1>
@@ -231,13 +283,20 @@ export default function Home() {
       </div>
 
       {/* Stats */}
-      <section className="py-20 border-b border-[var(--card-border)]">
+      <section className="py-20 border-b border-[var(--card-border)] relative z-10 bg-slate-900/20">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-white mb-2">{stat.number}</div>
-                <div className="text-slate-400 text-sm">{stat.label}</div>
+              <div key={i} className="text-center group">
+                <div className="text-3xl md:text-4xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                  <AnimatedCounter 
+                    value={stat.value} 
+                    decimals={stat.decimals} 
+                    prefix={stat.prefix} 
+                    suffix={stat.suffix} 
+                  />
+                </div>
+                <div className="text-slate-400 text-sm font-medium tracking-wide uppercase">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -245,7 +304,8 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section id="features" className="py-24">
+      <section id="features" className="py-24 relative z-10">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="container mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <h2 className="text-3xl font-bold text-white mb-4">Everything you need</h2>
@@ -253,12 +313,49 @@ export default function Home() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {features.map((feat, i) => (
-              <div key={i} className="solid-panel p-8 rounded-2xl solid-panel-hover">
-                <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-6">
+              <div key={i} className="solid-panel p-8 rounded-2xl solid-panel-hover group cursor-pointer">
+                <div className="w-12 h-12 rounded-lg bg-blue-500/10 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all">
                   <feat.icon className="w-6 h-6 text-blue-500" />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{feat.title}</h3>
+                <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors">{feat.title}</h3>
                 <p className="text-slate-400 leading-relaxed">{feat.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 border-t border-[var(--card-border)] bg-slate-900/10 relative z-10">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-white mb-4">Frequently Asked Questions</h2>
+            <p className="text-slate-400 text-lg">Got questions? We have answers.</p>
+          </div>
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <div 
+                key={index} 
+                className="solid-panel rounded-xl overflow-hidden transition-all duration-200"
+              >
+                <button
+                  onClick={() => setActiveFaq(activeFaq === index ? null : index)}
+                  className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-800/30 transition-colors"
+                >
+                  <span className="font-semibold text-white">{faq.question}</span>
+                  {activeFaq === index ? (
+                    <ChevronUp className="w-5 h-5 text-blue-500 shrink-0" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-slate-500 shrink-0" />
+                  )}
+                </button>
+                <div 
+                  className={`px-6 text-slate-400 text-sm leading-relaxed overflow-hidden transition-all duration-300 ease-in-out ${
+                    activeFaq === index ? 'max-h-48 pb-5 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  {faq.answer}
+                </div>
               </div>
             ))}
           </div>

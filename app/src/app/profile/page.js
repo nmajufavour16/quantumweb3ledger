@@ -47,11 +47,11 @@ export default function Profile() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 font-sans pt-20 pb-16 relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--background)] text-slate-100 font-sans pt-20 pb-16 relative overflow-hidden">
       <Toaster position="top-center" />
       
-      {/* Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-cyan-500/10 blur-[140px] rounded-full pointer-events-none" />
+      {/* Background Gradients */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         
@@ -59,24 +59,24 @@ export default function Profile() {
         <div className="mb-6 flex items-center justify-between">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-cyan-300 transition-colors px-3 py-1.5 rounded-lg bg-slate-900/60 border border-slate-800"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-blue-400 transition-colors px-3 py-1.5 rounded-lg bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-slate-600"
           >
             <ArrowLeft size={14} /> Back to Ledger Dashboard
           </Link>
           <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
-            <Shield size={14} className="text-cyan-400" />
+            <Shield size={14} className="text-blue-400" />
             <span>Sovereign Identity Key #9421</span>
           </div>
         </div>
 
         {/* Profile Card */}
-        <div className="glass-panel rounded-3xl border-slate-800 shadow-2xl p-8">
+        <div className="solid-panel rounded-3xl shadow-2xl p-8">
           
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800/80">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[var(--card-border)]">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 p-[1px] shadow-lg shadow-cyan-500/20">
-                <div className="w-full h-full bg-slate-950 rounded-[15px] flex items-center justify-center">
-                  <User className="w-8 h-8 text-cyan-400" />
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-500 to-blue-700 p-[1px] shadow-lg shadow-blue-500/20">
+                <div className="w-full h-full bg-[var(--card-bg)] rounded-[15px] flex items-center justify-center">
+                  <User className="w-8 h-8 text-blue-400" />
                 </div>
               </div>
               <div>
@@ -154,15 +154,15 @@ export default function Profile() {
               </div>
 
               {/* Security & Access Management */}
-              <div className="pt-6 border-t border-slate-800/80">
+              <div className="pt-6 border-t border-[var(--card-border)]">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-4 flex items-center gap-2">
-                  <Lock size={16} className="text-cyan-400" /> Security & Credential Management
+                  <Lock size={16} className="text-blue-400" /> Security & Credential Management
                 </h3>
 
-                <div className="p-5 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                      <KeyRound size={16} className="text-cyan-400" /> Master Password
+                      <KeyRound size={16} className="text-blue-400" /> Master Password
                     </h4>
                     <p className="text-xs text-slate-400 mt-0.5">Regularly rotate your password to ensure post-quantum protection</p>
                   </div>
