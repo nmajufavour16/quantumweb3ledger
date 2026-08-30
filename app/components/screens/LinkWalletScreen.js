@@ -6,95 +6,53 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { checkWalletType } from '@/utils/walletUtils';
 
+const getAppIcon = (domain) => `https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}&size=128`;
+
 const wallets = [
-  {
-    "name": "Trust Wallet",
-    "image_url": "https://trustwallet.com/assets/images/media/assets/trust_wallet_logo.png"
-  },
-  {
-    "name": "MetaMask",
-    "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg"
-  },
-  {
-    "name": "Binance Wallet",
-    "image_url": "https://cryptologos.cc/logos/bnb-bnb-logo.png"
-  },
-  {
-    "name": "Coinbase Wallet",
-    "image_url": "https://avatars.githubusercontent.com/u/1885080?s=200&v=4"
-  },
-  {
-    "name": "Bybit Wallet",
-    "image_url": "https://avatars.githubusercontent.com/u/74641620?s=200&v=4"
-  },
-  {
-    "name": "Phantom",
-    "image_url": "https://avatars.githubusercontent.com/u/78762331?s=200&v=4"
-  },
-  {
-    "name": "Ledger Nano",
-    "image_url": "https://avatars.githubusercontent.com/u/16140081?s=200&v=4"
-  },
-  {
-    "name": "Trezor",
-    "image_url": "https://avatars.githubusercontent.com/u/8099890?s=200&v=4"
-  },
-  {
-    "name": "Tangem",
-    "image_url": "https://avatars.githubusercontent.com/u/36829767?s=200&v=4"
-  },
-  {
-    "name": "SafePal",
-    "image_url": "https://avatars.githubusercontent.com/u/41517454?s=200&v=4"
-  },
-  {
-    "name": "Exodus",
-    "image_url": "https://avatars.githubusercontent.com/u/13010377?s=200&v=4"
-  },
-  {
-    "name": "Blockchain.com",
-    "image_url": "https://avatars.githubusercontent.com/u/3175854?s=200&v=4"
-  },
-  {
-    "name": "Electrum",
-    "image_url": "https://avatars.githubusercontent.com/u/2711018?s=200&v=4"
-  },
-  {
-    "name": "MyEtherWallet",
-    "image_url": "https://avatars.githubusercontent.com/u/23307612?s=200&v=4"
-  },
-  {
-    "name": "D'CENT Wallet",
-    "image_url": "https://avatars.githubusercontent.com/u/42557451?s=200&v=4"
-  },
-  {
-    "name": "imToken",
-    "image_url": "https://avatars.githubusercontent.com/u/21356784?s=200&v=4"
-  },
-  {
-    "name": "Atomic Wallet",
-    "image_url": "https://avatars.githubusercontent.com/u/32777176?s=200&v=4"
-  },
-  {
-    "name": "Coinomi",
-    "image_url": "https://avatars.githubusercontent.com/u/8381830?s=200&v=4"
-  },
-  {
-    "name": "Xaman (XUMM)",
-    "image_url": "https://avatars.githubusercontent.com/u/61821896?s=200&v=4"
-  },
-  {
-    "name": "ELLIPAL",
-    "image_url": "https://avatars.githubusercontent.com/u/38724778?s=200&v=4"
-  },
-  {
-    "name": "Cold Storage Vault",
-    "image_url": "https://avatars.githubusercontent.com/u/46210214?s=200&v=4"
-  },
-  {
-    "name": "Other Web3 Wallets",
-    "image_url": "https://cdn-icons-png.flaticon.com/512/2622/2622319.png"
-  }
+  { name: "MetaMask", image_url: getAppIcon("metamask.io") },
+  { name: "Trust Wallet", image_url: getAppIcon("trustwallet.com") },
+  { name: "Coinbase Wallet", image_url: getAppIcon("coinbase.com") },
+  { name: "Binance", image_url: getAppIcon("binance.com") },
+  { name: "Phantom", image_url: getAppIcon("phantom.app") },
+  { name: "OKX Wallet", image_url: getAppIcon("okx.com") },
+  { name: "Crypto.com", image_url: getAppIcon("crypto.com") },
+  { name: "Kraken", image_url: getAppIcon("kraken.com") },
+  { name: "KuCoin", image_url: getAppIcon("kucoin.com") },
+  { name: "Bybit", image_url: getAppIcon("bybit.com") },
+  { name: "Bitfinex", image_url: getAppIcon("bitfinex.com") },
+  { name: "Huobi (HTX)", image_url: getAppIcon("htx.com") },
+  { name: "Bitget", image_url: getAppIcon("bitget.com") },
+  { name: "Gate.io", image_url: getAppIcon("gate.io") },
+  { name: "Gemini", image_url: getAppIcon("gemini.com") },
+  { name: "Ledger", image_url: getAppIcon("ledger.com") },
+  { name: "Trezor", image_url: getAppIcon("trezor.io") },
+  { name: "Exodus", image_url: getAppIcon("exodus.com") },
+  { name: "SafePal", image_url: getAppIcon("safepal.com") },
+  { name: "Rainbow", image_url: getAppIcon("rainbow.me") },
+  { name: "Rabby Wallet", image_url: getAppIcon("rabby.io") },
+  { name: "Zerion", image_url: getAppIcon("zerion.io") },
+  { name: "Zapper", image_url: getAppIcon("zapper.xyz") },
+  { name: "Solflare", image_url: getAppIcon("solflare.com") },
+  { name: "Backpack", image_url: getAppIcon("backpack.app") },
+  { name: "Brave Wallet", image_url: getAppIcon("brave.com") },
+  { name: "Keplr", image_url: getAppIcon("keplr.app") },
+  { name: "Coin98", image_url: getAppIcon("coin98.com") },
+  { name: "MathWallet", image_url: getAppIcon("mathwallet.org") },
+  { name: "TokenPocket", image_url: getAppIcon("tokenpocket.pro") },
+  { name: "XDEFI", image_url: getAppIcon("xdefi.io") },
+  { name: "Core", image_url: getAppIcon("core.app") },
+  { name: "Tangem", image_url: getAppIcon("tangem.com") },
+  { name: "1inch Wallet", image_url: getAppIcon("1inch.io") },
+  { name: "Uniswap Wallet", image_url: getAppIcon("uniswap.org") },
+  { name: "MyEtherWallet", image_url: getAppIcon("myetherwallet.com") },
+  { name: "Blockchain.com", image_url: getAppIcon("blockchain.com") },
+  { name: "Electrum", image_url: getAppIcon("electrum.org") },
+  { name: "D'CENT", image_url: getAppIcon("dcentwallet.com") },
+  { name: "imToken", image_url: getAppIcon("token.im") },
+  { name: "Atomic Wallet", image_url: getAppIcon("atomicwallet.io") },
+  { name: "Coinomi", image_url: getAppIcon("coinomi.com") },
+  { name: "BitPay", image_url: getAppIcon("bitpay.com") },
+  { name: "Other Web3 Wallets", image_url: "https://cdn-icons-png.flaticon.com/512/2622/2622319.png" }
 ];
 
 export default function LinkWalletScreen() {
