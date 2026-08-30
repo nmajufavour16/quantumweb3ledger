@@ -48,8 +48,8 @@ export default function Navbar({ selectedTab, setSelectedTab, isMenuOpen, setIsM
             }}
             className="flex items-center gap-2.5 cursor-pointer group"
           >
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <Shield className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 rounded-lg">
+              <img src="/logo.jpg" alt="QFS Ledger Logo" className="w-full h-full rounded-lg object-cover" />
             </div>
             <div>
               <span className="text-white text-base font-bold tracking-tight">QFS Ledger</span>

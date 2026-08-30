@@ -142,9 +142,7 @@ export default function Home() {
             onClick={() => router.push('/')}
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-white" />
-            </div>
+            <img src="/logo.jpg" alt="QFS Ledger Logo" className="w-10 h-10 rounded-lg object-cover shadow-lg shadow-blue-500/20" />
             <div className="text-xl font-bold tracking-tight text-white">
               QFS Ledger
             </div>

@@ -76,10 +76,8 @@ export default function Login() {
             onClick={() => router.push('/')}
             className="inline-flex items-center gap-2 cursor-pointer mb-4 group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 to-blue-700 p-[1px] shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-[var(--card-bg)] rounded-[11px] flex items-center justify-center">
-                <Shield className="w-5 h-5 text-blue-400" />
-              </div>
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-blue-500 to-blue-700 p-[1px] shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
+              <img src="/logo.jpg" alt="QFS Ledger Logo" className="w-full h-full rounded-[11px] object-cover" />
             </div>
             <span className="text-xl font-bold tracking-tight text-white">QFS <span className="text-blue-400">Ledger</span></span>
           </div>
