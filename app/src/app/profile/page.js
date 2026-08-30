@@ -65,7 +65,7 @@ export default function Profile() {
           </Link>
           <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
             <Shield size={14} className="text-blue-400" />
-            <span>Sovereign Identity Key #9421</span>
+            <span>Account ID #9421</span>
           </div>
         </div>
 
@@ -81,9 +81,9 @@ export default function Profile() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-white tracking-tight">
-                  {userInfo.firstName ? `${userInfo.firstName} ${userInfo.lastName}` : 'Ledger Account'}
+                  {userInfo.firstName ? `${userInfo.firstName} ${userInfo.lastName}` : 'User Profile'}
                 </h1>
-                <p className="text-xs text-slate-400 font-mono mt-0.5">{userInfo.email || 'Encrypted Identity'}</p>
+                <p className="text-xs text-slate-400 font-mono mt-0.5">{userInfo.email || 'User Email'}</p>
               </div>
             </div>
 
@@ -94,7 +94,7 @@ export default function Profile() {
                   : 'bg-yellow-500/10 border border-yellow-500/30 text-yellow-400'
               }`}>
                 <CheckCircle2 size={14} />
-                {userInfo.isVerified ? 'Cryptographically Verified' : 'Standard Tier (Unverified)'}
+                {userInfo.isVerified ? 'Verified Account' : 'Unverified Account'}
               </span>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function Profile() {
                 </div>
 
                 <div className="sm:col-span-2 p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
-                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Jurisdiction / Country</div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Country</div>
                   <div className="text-sm font-medium text-white flex items-center gap-2">
                     <MapPin size={16} className="text-slate-500" />
                     <span>{userInfo.country || '—'}</span>
@@ -156,15 +156,15 @@ export default function Profile() {
               {/* Security & Access Management */}
               <div className="pt-6 border-t border-[var(--card-border)]">
                 <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-4 flex items-center gap-2">
-                  <Lock size={16} className="text-blue-400" /> Security & Credential Management
+                  <Lock size={16} className="text-blue-400" /> Security Settings
                 </h3>
 
                 <div className="p-5 rounded-2xl bg-[var(--card-bg)] border border-[var(--card-border)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                      <KeyRound size={16} className="text-blue-400" /> Master Password
+                      <KeyRound size={16} className="text-blue-400" /> Account Password
                     </h4>
-                    <p className="text-xs text-slate-400 mt-0.5">Regularly rotate your password to ensure post-quantum protection</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Update your password regularly to keep your account secure</p>
                   </div>
                   <button
                     onClick={() => router.push('/change-password')}
