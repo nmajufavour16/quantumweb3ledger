@@ -44,8 +44,8 @@ export default function Sidebar({ selectedTab, setSelectedTab }) {
         onClick={() => setSelectedTab('overview')}
         className="h-20 flex items-center gap-3 px-6 cursor-pointer border-b border-[var(--card-border)] hover:bg-slate-900 transition-colors"
       >
-        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
-          <Shield className="w-5 h-5 text-white" />
+        <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0">
+          <img src="/logo.jpg" alt="QFS Ledger Logo" className="w-full h-full object-cover" />
         </div>
         <div>
           <span className="text-white text-lg font-bold tracking-tight">QFS Ledger</span>

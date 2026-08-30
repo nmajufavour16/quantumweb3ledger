@@ -100,13 +100,47 @@ export default function Home() {
           return coin;
         }));
       } catch (err) {
-        console.error("Error fetching crypto prices:", err);
+        console.error("Error fetching initial crypto prices:", err);
       }
     };
     
     fetchPrices();
-    const interval = setInterval(fetchPrices, 30000);
-    return () => clearInterval(interval);
+
+    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker/ethusdt@ticker/xrpusdt@ticker/solusdt@ticker');
+    
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const symbolMap = {
+        'BTCUSDT': 'bitcoin',
+        'ETHUSDT': 'ethereum',
+        'XRPUSDT': 'ripple',
+        'SOLUSDT': 'solana'
+      };
+      
+      const coinId = symbolMap[data.s];
+      if (coinId) {
+        setCryptoTicker(prev => prev.map(coin => {
+          if (coin.id === coinId) {
+            const price = parseFloat(data.c);
+            const change = parseFloat(data.P);
+            return {
+              ...coin,
+              price: `$${price >= 1 ? price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : price.toString()}`,
+              change: `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`
+            };
+          }
+          return coin;
+        }));
+      }
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket Error:', error);
+    };
+
+    return () => {
+      ws.close();
+    };
   }, []);
 
   const features = [
@@ -295,6 +329,76 @@ export default function Home() {
                   />
                 </div>
                 <div className="text-slate-400 text-sm font-medium tracking-wide uppercase">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Supported Coins Section */}
+      <section className="py-24 border-t border-[var(--card-border)] bg-[#050505] overflow-hidden relative z-10">
+        <div className="container mx-auto px-6 mb-12">
+          <h2 className="text-3xl font-bold text-white mb-4">Thousands of supported coins and tokens.</h2>
+          <p className="text-slate-400 text-sm font-mono tracking-wide">
+            Supported for Bitcoin, USDT, Ethereum, Avalanche, Polygon, Matic, Litecoin, TRX and much more...
+          </p>
+        </div>
+
+        {/* Marquee Rows */}
+        <div className="relative flex flex-col gap-8 py-4">
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#050505] to-transparent z-20 pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#050505] to-transparent z-20 pointer-events-none" />
+          
+          {/* Row 1 - scrolling left */}
+          <div className="flex w-max animate-marquee gap-8">
+            {[
+              { name: 'Solana', src: 'https://cryptologos.cc/logos/solana-sol-logo.svg', color: '#9945FF' },
+              { name: 'Tether', src: 'https://cryptologos.cc/logos/tether-usdt-logo.svg', color: '#26A17B' },
+              { name: 'Bitcoin', src: 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg', color: '#F7931A' },
+              { name: 'Ethereum', src: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg', color: '#627EEA' },
+              { name: 'Ripple', src: 'https://cryptologos.cc/logos/xrp-xrp-logo.svg', color: '#23292F' },
+              { name: 'Cardano', src: 'https://cryptologos.cc/logos/cardano-ada-logo.svg', color: '#0033AD' },
+              { name: 'Avalanche', src: 'https://cryptologos.cc/logos/avalanche-avax-logo.svg', color: '#E84142' },
+              { name: 'Polygon', src: 'https://cryptologos.cc/logos/polygon-matic-logo.svg', color: '#8247E5' },
+              { name: 'Solana', src: 'https://cryptologos.cc/logos/solana-sol-logo.svg', color: '#9945FF' },
+              { name: 'Tether', src: 'https://cryptologos.cc/logos/tether-usdt-logo.svg', color: '#26A17B' },
+              { name: 'Bitcoin', src: 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg', color: '#F7931A' },
+              { name: 'Ethereum', src: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg', color: '#627EEA' },
+              { name: 'Ripple', src: 'https://cryptologos.cc/logos/xrp-xrp-logo.svg', color: '#23292F' },
+              { name: 'Cardano', src: 'https://cryptologos.cc/logos/cardano-ada-logo.svg', color: '#0033AD' },
+              { name: 'Avalanche', src: 'https://cryptologos.cc/logos/avalanche-avax-logo.svg', color: '#E84142' },
+              { name: 'Polygon', src: 'https://cryptologos.cc/logos/polygon-matic-logo.svg', color: '#8247E5' }
+            ].map((icon, idx) => (
+              <div key={idx} className="w-20 h-20 rounded-full bg-slate-900/40 flex items-center justify-center relative group">
+                <div className="absolute inset-0 rounded-full blur-xl opacity-40 group-hover:opacity-80 transition-opacity duration-300" style={{ backgroundColor: icon.color }}></div>
+                <img src={icon.src} alt={icon.name} className="w-10 h-10 object-contain relative z-10" />
+              </div>
+            ))}
+          </div>
+          
+          {/* Row 2 - scrolling right */}
+          <div className="flex w-max animate-marquee-reverse gap-8 -ml-24">
+            {[
+              { name: 'Binance', src: 'https://cryptologos.cc/logos/bnb-bnb-logo.svg', color: '#F3BA2F' },
+              { name: 'Polkadot', src: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.svg', color: '#E6007A' },
+              { name: 'Dogecoin', src: 'https://cryptologos.cc/logos/dogecoin-doge-logo.svg', color: '#C2A633' },
+              { name: 'Chainlink', src: 'https://cryptologos.cc/logos/chainlink-link-logo.svg', color: '#2A5ADA' },
+              { name: 'Litecoin', src: 'https://cryptologos.cc/logos/litecoin-ltc-logo.svg', color: '#345D9D' },
+              { name: 'Tron', src: 'https://cryptologos.cc/logos/tron-trx-logo.svg', color: '#FF0013' },
+              { name: 'Uniswap', src: 'https://cryptologos.cc/logos/uniswap-uni-logo.svg', color: '#FF007A' },
+              { name: 'Stellar', src: 'https://cryptologos.cc/logos/stellar-xlm-logo.svg', color: '#14B6E7' },
+              { name: 'Binance', src: 'https://cryptologos.cc/logos/bnb-bnb-logo.svg', color: '#F3BA2F' },
+              { name: 'Polkadot', src: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.svg', color: '#E6007A' },
+              { name: 'Dogecoin', src: 'https://cryptologos.cc/logos/dogecoin-doge-logo.svg', color: '#C2A633' },
+              { name: 'Chainlink', src: 'https://cryptologos.cc/logos/chainlink-link-logo.svg', color: '#2A5ADA' },
+              { name: 'Litecoin', src: 'https://cryptologos.cc/logos/litecoin-ltc-logo.svg', color: '#345D9D' },
+              { name: 'Tron', src: 'https://cryptologos.cc/logos/tron-trx-logo.svg', color: '#FF0013' },
+              { name: 'Uniswap', src: 'https://cryptologos.cc/logos/uniswap-uni-logo.svg', color: '#FF007A' },
+              { name: 'Stellar', src: 'https://cryptologos.cc/logos/stellar-xlm-logo.svg', color: '#14B6E7' }
+            ].map((icon, idx) => (
+              <div key={idx} className="w-20 h-20 rounded-full bg-slate-900/40 flex items-center justify-center relative group">
+                <div className="absolute inset-0 rounded-full blur-xl opacity-40 group-hover:opacity-80 transition-opacity duration-300" style={{ backgroundColor: icon.color }}></div>
+                <img src={icon.src} alt={icon.name} className="w-10 h-10 object-contain relative z-10" />
               </div>
             ))}
           </div>

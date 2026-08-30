@@ -62,11 +62,17 @@ export default function Dashboard() {
   });
   const [cryptoBalances, setCryptoBalances] = useState({
     bitcoin: 0,
-    ripple: 0,
-    stellar: 0,
     ethereum: 0,
-    'shiba-inu': 0,
-    'hedera-hashgraph': 0
+    binancecoin: 0,
+    solana: 0,
+    ripple: 0,
+    cardano: 0,
+    'avalanche-2': 0,
+    dogecoin: 0,
+    polkadot: 0,
+    'matic-network': 0,
+    chainlink: 0,
+    litecoin: 0
   });
   const [walletBalances, setWalletBalances] = useState({});
   const [isLoadingBalances, setIsLoadingBalances] = useState(false);
@@ -146,22 +152,61 @@ export default function Dashboard() {
   }, [router, walletState.wallets]);
 
   useEffect(() => {
+    // Initial fetch to get baseline data quickly
     const fetchCryptoData = async () => {
       try {
         const response = await fetch(
-          `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ripple,stellar,ethereum,shiba-inu,hedera-hashgraph&vs_currencies=usd&include_24h_change=true&include_last_updated_at=true&include_high_24h=true&_t=${Date.now()}`,
+          `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple,cardano,avalanche-2,dogecoin,polkadot,matic-network,chainlink,litecoin&vs_currencies=usd&include_24h_change=true&_t=${Date.now()}`,
           { cache: 'no-store' }
         );
         const data = await response.json();
         setCryptoData(data);
       } catch (error) {
-        console.error('Error fetching market rates:', error);
+        console.error('Error fetching initial market rates:', error);
+      }
+    };
+    fetchCryptoData();
+
+    // Set up Binance WebSocket for truly live updates
+    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker/ethusdt@ticker/bnbusdt@ticker/solusdt@ticker/xrpusdt@ticker/adausdt@ticker/avaxusdt@ticker/dogeusdt@ticker/dotusdt@ticker/maticusdt@ticker/linkusdt@ticker/ltcusdt@ticker');
+    
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const symbolMap = {
+        'BTCUSDT': 'bitcoin',
+        'ETHUSDT': 'ethereum',
+        'BNBUSDT': 'binancecoin',
+        'SOLUSDT': 'solana',
+        'XRPUSDT': 'ripple',
+        'ADAUSDT': 'cardano',
+        'AVAXUSDT': 'avalanche-2',
+        'DOGEUSDT': 'dogecoin',
+        'DOTUSDT': 'polkadot',
+        'MATICUSDT': 'matic-network',
+        'LINKUSDT': 'chainlink',
+        'LTCUSDT': 'litecoin'
+      };
+      
+      const coinId = symbolMap[data.s];
+      if (coinId) {
+        setCryptoData(prev => ({
+          ...prev,
+          [coinId]: {
+            ...prev?.[coinId],
+            usd: parseFloat(data.c),
+            usd_24h_change: parseFloat(data.P)
+          }
+        }));
       }
     };
 
-    fetchCryptoData();
-    const interval = setInterval(fetchCryptoData, 30000);
-    return () => clearInterval(interval);
+    ws.onerror = (error) => {
+      console.error('WebSocket Error:', error);
+    };
+
+    return () => {
+      ws.close();
+    };
   }, []);
 
   useEffect(() => {
@@ -200,10 +245,17 @@ export default function Dashboard() {
     const balances = {};
     const aggregatedBalances = {
       bitcoin: 0,
-      ripple: 0,
-      stellar: 0,
       ethereum: 0,
-      'shiba-inu': 0
+      binancecoin: 0,
+      solana: 0,
+      ripple: 0,
+      cardano: 0,
+      'avalanche-2': 0,
+      dogecoin: 0,
+      polkadot: 0,
+      'matic-network': 0,
+      chainlink: 0,
+      litecoin: 0
     };
     
     try {
@@ -224,7 +276,15 @@ export default function Dashboard() {
             'bitcoin': 'bitcoin',
             'ethereum': 'ethereum',
             'ripple': 'ripple',
-            'stellar': 'stellar'
+            'solana': 'solana',
+            'binance': 'binancecoin',
+            'cardano': 'cardano',
+            'avalanche': 'avalanche-2',
+            'dogecoin': 'dogecoin',
+            'polkadot': 'polkadot',
+            'polygon': 'matic-network',
+            'chainlink': 'chainlink',
+            'litecoin': 'litecoin'
           };
           
           const key = typeToKey[type.toLowerCase()];
@@ -304,48 +364,18 @@ export default function Dashboard() {
   };
 
   const cryptoList = [
-    {
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      id: 'bitcoin',
-      image: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/btc.svg',
-      balance: cryptoBalances.bitcoin
-    },
-    {
-      name: 'Ripple',
-      symbol: 'XRP',
-      id: 'ripple',
-      image: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/xrp.svg',
-      balance: cryptoBalances.ripple
-    },
-    {
-      name: 'Stellar',
-      symbol: 'XLM',
-      id: 'stellar',
-      image: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/xlm.svg',
-      balance: cryptoBalances.stellar
-    },
-    {
-      name: 'Ethereum',
-      symbol: 'ETH',
-      id: 'ethereum',
-      image: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/eth.svg',
-      balance: cryptoBalances.ethereum
-    },
-    {
-      name: 'Hedera',
-      symbol: 'HBAR',
-      id: 'hedera-hashgraph',
-      image: 'https://cryptologos.cc/logos/hedera-hbar-logo.svg',
-      balance: cryptoBalances['hedera-hashgraph']
-    },
-    {
-      name: 'Shiba Inu',
-      symbol: 'SHIB',
-      id: 'shiba-inu',
-      image: 'https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@1a63530be6e374711a8554f31b17e4cb92c25fa5/svg/color/shib.svg',
-      balance: cryptoBalances['shiba-inu']
-    }
+    { name: 'Bitcoin', symbol: 'BTC', id: 'bitcoin', image: 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg', balance: cryptoBalances.bitcoin },
+    { name: 'Ethereum', symbol: 'ETH', id: 'ethereum', image: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg', balance: cryptoBalances.ethereum },
+    { name: 'BNB', symbol: 'BNB', id: 'binancecoin', image: 'https://cryptologos.cc/logos/bnb-bnb-logo.svg', balance: cryptoBalances.binancecoin },
+    { name: 'Solana', symbol: 'SOL', id: 'solana', image: 'https://cryptologos.cc/logos/solana-sol-logo.svg', balance: cryptoBalances.solana },
+    { name: 'Ripple', symbol: 'XRP', id: 'ripple', image: 'https://cryptologos.cc/logos/xrp-xrp-logo.svg', balance: cryptoBalances.ripple },
+    { name: 'Cardano', symbol: 'ADA', id: 'cardano', image: 'https://cryptologos.cc/logos/cardano-ada-logo.svg', balance: cryptoBalances.cardano },
+    { name: 'Avalanche', symbol: 'AVAX', id: 'avalanche-2', image: 'https://cryptologos.cc/logos/avalanche-avax-logo.svg', balance: cryptoBalances['avalanche-2'] },
+    { name: 'Dogecoin', symbol: 'DOGE', id: 'dogecoin', image: 'https://cryptologos.cc/logos/dogecoin-doge-logo.svg', balance: cryptoBalances.dogecoin },
+    { name: 'Polkadot', symbol: 'DOT', id: 'polkadot', image: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.svg', balance: cryptoBalances.polkadot },
+    { name: 'Polygon', symbol: 'MATIC', id: 'matic-network', image: 'https://cryptologos.cc/logos/polygon-matic-logo.svg', balance: cryptoBalances['matic-network'] },
+    { name: 'Chainlink', symbol: 'LINK', id: 'chainlink', image: 'https://cryptologos.cc/logos/chainlink-link-logo.svg', balance: cryptoBalances.chainlink },
+    { name: 'Litecoin', symbol: 'LTC', id: 'litecoin', image: 'https://cryptologos.cc/logos/litecoin-ltc-logo.svg', balance: cryptoBalances.litecoin }
   ];
 
   const renderCryptoBalance = (crypto) => {

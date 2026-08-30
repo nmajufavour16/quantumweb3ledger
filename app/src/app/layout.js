@@ -17,6 +17,10 @@ export const metadata = {
     initialScale: 1,
     maximumScale: 1,
   },
+  icons: {
+    icon: '/logo.jpg',
+    apple: '/logo.jpg',
+  },
 };
 
 export default function RootLayout({ children }) {
