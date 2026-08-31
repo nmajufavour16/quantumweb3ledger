@@ -51,7 +51,7 @@ body {
 
 .animate-marquee {
   display: flex;
-  width: 200%;
+  width: max-content;
   animation: marquee 30s linear infinite;
 }
 
@@ -66,8 +66,8 @@ body {
 
 .animate-marquee-reverse {
   display: flex;
-  width: 200%;
-  animation: marquee-reverse 35s linear infinite;
+  width: max-content;
+  animation: marquee-reverse 30s linear infinite;
 }
 
 .animate-marquee-reverse:hover {
