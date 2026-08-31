@@ -19,8 +19,6 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
-  selection-background-color: var(--primary-blue);
-  selection-color: #ffffff;
 }
 
 ::selection {
