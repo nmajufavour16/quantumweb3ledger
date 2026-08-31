@@ -363,9 +363,8 @@ export default function Home() {
                   { name: 'Avalanche', src: 'https://cryptologos.cc/logos/avalanche-avax-logo.svg', color: '#E84142' },
                   { name: 'Polygon', src: 'https://cryptologos.cc/logos/polygon-matic-logo.svg', color: '#8247E5' }
                 ].map((icon, idx) => (
-                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full bg-slate-900/30 flex items-center justify-center relative group overflow-hidden">
-                    <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-300" style={{ backgroundColor: icon.color }}></div>
-                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain relative z-10 drop-shadow-md" />
+                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full bg-slate-900/30 flex items-center justify-center relative group overflow-hidden transition-colors hover:bg-slate-800/50">
+                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain relative z-10" />
                   </div>
                 ))}
               </div>
@@ -386,9 +385,8 @@ export default function Home() {
                   { name: 'Uniswap', src: 'https://cryptologos.cc/logos/uniswap-uni-logo.svg', color: '#FF007A' },
                   { name: 'Stellar', src: 'https://cryptologos.cc/logos/stellar-xlm-logo.svg', color: '#14B6E7' }
                 ].map((icon, idx) => (
-                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full bg-slate-900/30 flex items-center justify-center relative group overflow-hidden">
-                    <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-300" style={{ backgroundColor: icon.color }}></div>
-                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain relative z-10 drop-shadow-md" />
+                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full bg-slate-900/30 flex items-center justify-center relative group overflow-hidden transition-colors hover:bg-slate-800/50">
+                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain relative z-10" />
                   </div>
                 ))}
               </div>
