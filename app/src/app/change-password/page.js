@@ -49,8 +49,8 @@ export default function ChangePassword() {
             onClick={() => router.push('/dashboard')}
             className="inline-flex items-center gap-2 cursor-pointer mb-4 group"
           >
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-blue-500 to-blue-700 p-[1px] shadow-lg shadow-blue-500/20 group-hover:scale-105 transition-transform">
-              <img src="/logo.jpg" alt="QFS Ledger Logo" className="w-full h-full rounded-[11px] object-cover" />
+            <div className="w-12 h-12 rounded-xl border border-blue-500/30 group-hover:scale-105 transition-transform overflow-hidden">
+              <img src="/logo.jpg" alt="QFS Ledger Logo" className="w-full h-full object-cover" />
             </div>
             <span className="text-xl font-bold tracking-tight text-white">QFS <span className="text-blue-400">Ledger</span></span>
           </div>

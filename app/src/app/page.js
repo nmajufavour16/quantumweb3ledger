@@ -176,7 +176,7 @@ export default function Home() {
             onClick={() => router.push('/')}
             className="flex items-center gap-3 cursor-pointer group"
           >
-            <img src="/logo.jpg" alt="QFS Ledger Logo" className="w-10 h-10 rounded-lg object-cover shadow-lg shadow-blue-500/20" />
+            <img src="/logo.jpg" alt="QFS Ledger Logo" className="w-10 h-10 rounded-lg object-cover border border-blue-500/30" />
             <div className="text-xl font-bold tracking-tight text-white">
               QFS Ledger
             </div>
@@ -363,8 +363,9 @@ export default function Home() {
                   { name: 'Avalanche', src: 'https://cryptologos.cc/logos/avalanche-avax-logo.svg', color: '#E84142' },
                   { name: 'Polygon', src: 'https://cryptologos.cc/logos/polygon-matic-logo.svg', color: '#8247E5' }
                 ].map((icon, idx) => (
-                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full border border-blue-500/30 bg-[var(--card-bg)] flex items-center justify-center group hover:border-blue-400/60 hover:bg-blue-500/5 transition-all duration-300">
-                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain" />
+                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full bg-slate-900/30 flex items-center justify-center relative group overflow-hidden">
+                    <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-300" style={{ backgroundColor: icon.color }}></div>
+                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain relative z-10 drop-shadow-md" />
                   </div>
                 ))}
               </div>
@@ -385,8 +386,9 @@ export default function Home() {
                   { name: 'Uniswap', src: 'https://cryptologos.cc/logos/uniswap-uni-logo.svg', color: '#FF007A' },
                   { name: 'Stellar', src: 'https://cryptologos.cc/logos/stellar-xlm-logo.svg', color: '#14B6E7' }
                 ].map((icon, idx) => (
-                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full border border-blue-500/30 bg-[var(--card-bg)] flex items-center justify-center group hover:border-blue-400/60 hover:bg-blue-500/5 transition-all duration-300">
-                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain" />
+                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full bg-slate-900/30 flex items-center justify-center relative group overflow-hidden">
+                    <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-300" style={{ backgroundColor: icon.color }}></div>
+                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain relative z-10 drop-shadow-md" />
                   </div>
                 ))}
               </div>
