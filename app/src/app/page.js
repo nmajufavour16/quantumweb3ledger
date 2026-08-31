@@ -337,9 +337,9 @@ export default function Home() {
 
       {/* Supported Coins Section */}
       <section className="py-24 border-t border-[var(--card-border)] bg-[#050505] overflow-hidden relative z-10">
-        <div className="container mx-auto px-6 mb-12">
+        <div className="container mx-auto px-6 mb-12 flex flex-col items-center text-center">
           <h2 className="text-3xl font-bold text-white mb-4">Thousands of supported coins and tokens.</h2>
-          <p className="text-slate-400 text-sm font-mono tracking-wide">
+          <p className="text-slate-400 text-sm font-mono tracking-wide max-w-2xl">
             Supported for Bitcoin, USDT, Ethereum, Avalanche, Polygon, Matic, Litecoin, TRX and much more...
           </p>
         </div>
@@ -351,7 +351,7 @@ export default function Home() {
           
           {/* Row 1 - scrolling left */}
           <div className="flex w-max animate-marquee">
-            {[1, 2].map((set) => (
+            {[...Array(12)].map((_, set) => (
               <div key={set} className="flex gap-8 pr-8">
                 {[
                   { name: 'Solana', src: 'https://cryptologos.cc/logos/solana-sol-logo.svg', color: '#9945FF' },
@@ -363,9 +363,8 @@ export default function Home() {
                   { name: 'Avalanche', src: 'https://cryptologos.cc/logos/avalanche-avax-logo.svg', color: '#E84142' },
                   { name: 'Polygon', src: 'https://cryptologos.cc/logos/polygon-matic-logo.svg', color: '#8247E5' }
                 ].map((icon, idx) => (
-                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full bg-slate-900/30 flex items-center justify-center relative group overflow-hidden">
-                    <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-300" style={{ backgroundColor: icon.color }}></div>
-                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain relative z-10 drop-shadow-md" />
+                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full border border-blue-500/30 bg-[var(--card-bg)] flex items-center justify-center group hover:border-blue-400/60 hover:bg-blue-500/5 transition-all duration-300">
+                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain" />
                   </div>
                 ))}
               </div>
@@ -374,7 +373,7 @@ export default function Home() {
           
           {/* Row 2 - scrolling right */}
           <div className="flex w-max animate-marquee-reverse -ml-24">
-            {[1, 2].map((set) => (
+            {[...Array(12)].map((_, set) => (
               <div key={set} className="flex gap-8 pr-8">
                 {[
                   { name: 'Binance', src: 'https://cryptologos.cc/logos/bnb-bnb-logo.svg', color: '#F3BA2F' },
@@ -386,9 +385,8 @@ export default function Home() {
                   { name: 'Uniswap', src: 'https://cryptologos.cc/logos/uniswap-uni-logo.svg', color: '#FF007A' },
                   { name: 'Stellar', src: 'https://cryptologos.cc/logos/stellar-xlm-logo.svg', color: '#14B6E7' }
                 ].map((icon, idx) => (
-                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full bg-slate-900/30 flex items-center justify-center relative group overflow-hidden">
-                    <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity duration-300" style={{ backgroundColor: icon.color }}></div>
-                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain relative z-10 drop-shadow-md" />
+                  <div key={`${set}-${idx}`} className="w-16 h-16 rounded-full border border-blue-500/30 bg-[var(--card-bg)] flex items-center justify-center group hover:border-blue-400/60 hover:bg-blue-500/5 transition-all duration-300">
+                    <img src={icon.src} alt={icon.name} className="w-8 h-8 object-contain" />
                   </div>
                 ))}
               </div>
