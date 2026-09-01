@@ -61,12 +61,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--background)] font-sans flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[var(--background)] font-sans flex items-center justify-center p-4 relative overflow-hidden selection:bg-blue-500/30 selection:text-white">
       <Toaster position="top-center" />
       
-      {/* Background glow */}
-      <div className="absolute -top-[15%] left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-blue-600/10 blur-[130px] rounded-full pointer-events-none" />
-      <div className="absolute -bottom-[15%] right-1/4 w-[500px] h-[300px] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none" />
+      {/* Background Gradients */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/15 via-[var(--background)] to-[var(--background)] pointer-events-none" />
 
       <div className="max-w-md w-full relative z-10">
         
@@ -74,34 +73,34 @@ export default function Login() {
         <div className="text-center mb-8">
           <div 
             onClick={() => router.push('/')}
-            className="inline-flex items-center gap-2 cursor-pointer mb-4 group"
+            className="inline-flex items-center gap-3 cursor-pointer mb-4 group"
           >
-            <div className="w-12 h-12 rounded-xl border border-blue-500/30 group-hover:scale-105 transition-transform overflow-hidden">
-              <img src="/logo.jpg" alt="QFS Ledger Logo" className="w-full h-full object-cover" />
+            <img src="/logo.jpg" alt="QFS Ledger Logo" className="w-10 h-10 rounded-lg object-cover border border-blue-500/30" />
+            <div className="text-xl font-bold tracking-tight text-white">
+              QFS Ledger
             </div>
-            <span className="text-xl font-bold tracking-tight text-white">QFS <span className="text-blue-400">Ledger</span></span>
           </div>
           
           <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Sign In to Your Ledger</h2>
-          <p className="mt-2 text-sm text-slate-400">Access your sovereign quantum-verified financial assets</p>
+          <p className="mt-2 text-sm text-slate-400">Manage your digital assets securely.</p>
         </div>
         
         {/* Solid Card */}
-        <div className="solid-panel rounded-3xl p-8 shadow-2xl relative">
+        <div className="solid-panel rounded-2xl p-8 shadow-2xl relative">
           
           <div className="flex items-center justify-between pb-4 mb-6 border-b border-[var(--card-border)] text-xs text-slate-400">
             <span className="flex items-center gap-1.5 text-blue-400 font-mono">
-              <Lock className="w-3.5 h-3.5" /> 256-Bit SSL Encrypted
+              <Lock className="w-3.5 h-3.5" /> Secure Connection
             </span>
             <span className="text-emerald-400 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Node Synced
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> System Online
             </span>
           </div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2" htmlFor="email">
-                Institutional / Registered Email
+                Email Address
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
@@ -122,7 +121,7 @@ export default function Login() {
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2" htmlFor="password">
-                Ledger Password
+                Password
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
@@ -151,7 +150,7 @@ export default function Login() {
                   onChange={handleChange}
                   className="rounded border-[var(--card-border)] bg-[var(--background)] text-blue-500 focus:ring-0 focus:ring-offset-0"
                 />
-                Remember this terminal
+                Remember me
               </label>
               <Link href="/forgot-password" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
                 Forgot password?
@@ -186,7 +185,7 @@ export default function Login() {
         {/* Bottom security pill */}
         <div className="mt-6 text-center text-[11px] text-slate-500 flex items-center justify-center gap-2">
           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Multi-Factor Authentication & Zero-Knowledge Verification Active</span>
+          <span>Your connection is secure and encrypted.</span>
         </div>
 
       </div>
