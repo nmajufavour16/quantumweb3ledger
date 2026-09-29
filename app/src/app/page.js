@@ -83,10 +83,17 @@ export default function Home() {
   ]);
 
   useEffect(() => {
+    let isMounted = true;
+    let ws = null;
+    let pollInterval = null;
+
     const fetchPrices = async () => {
       try {
-        const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,ripple,solana,tether&vs_currencies=usd&include_24h_change=true&_t=${Date.now()}`, { cache: 'no-store' });
+        const response = await fetch('/api/prices', { cache: 'no-store' });
+        if (!response.ok) return;
         const data = await response.json();
+        if (!isMounted || !data) return;
+
         setCryptoTicker(prev => prev.map(coin => {
           if (data[coin.id]) {
             const price = data[coin.id].usd;
@@ -100,46 +107,73 @@ export default function Home() {
           return coin;
         }));
       } catch (err) {
-        console.error("Error fetching initial crypto prices:", err);
+        // Fallback gracefully without breaking UI
       }
     };
     
     fetchPrices();
 
-    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker/ethusdt@ticker/xrpusdt@ticker/solusdt@ticker');
-    
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      const symbolMap = {
-        'BTCUSDT': 'bitcoin',
-        'ETHUSDT': 'ethereum',
-        'XRPUSDT': 'ripple',
-        'SOLUSDT': 'solana'
-      };
+    // Setup Binance WebSocket with safe connection handling & polling fallback
+    try {
+      ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker/ethusdt@ticker/xrpusdt@ticker/solusdt@ticker');
       
-      const coinId = symbolMap[data.s];
-      if (coinId) {
-        setCryptoTicker(prev => prev.map(coin => {
-          if (coin.id === coinId) {
-            const price = parseFloat(data.c);
-            const change = parseFloat(data.P);
-            return {
-              ...coin,
-              price: `$${price >= 1 ? price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : price.toString()}`,
-              change: `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`
-            };
+      ws.onmessage = (event) => {
+        if (!isMounted) return;
+        try {
+          const data = JSON.parse(event.data);
+          const symbolMap = {
+            'BTCUSDT': 'bitcoin',
+            'ETHUSDT': 'ethereum',
+            'XRPUSDT': 'ripple',
+            'SOLUSDT': 'solana'
+          };
+          
+          const coinId = symbolMap[data.s];
+          if (coinId) {
+            setCryptoTicker(prev => prev.map(coin => {
+              if (coin.id === coinId) {
+                const price = parseFloat(data.c);
+                const change = parseFloat(data.P);
+                return {
+                  ...coin,
+                  price: `$${price >= 1 ? price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) : price.toString()}`,
+                  change: `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`
+                };
+              }
+              return coin;
+            }));
           }
-          return coin;
-        }));
-      }
-    };
+        } catch (e) {
+          // ignore parsing error
+        }
+      };
 
-    ws.onerror = (error) => {
-      console.error('WebSocket Error:', error);
-    };
+      ws.onerror = () => {
+        // In regions where Binance is blocked (e.g. Nigeria/US), activate polling fallback
+        if (!pollInterval && isMounted) {
+          pollInterval = setInterval(fetchPrices, 15000);
+        }
+      };
+
+      ws.onclose = () => {
+        if (!pollInterval && isMounted) {
+          pollInterval = setInterval(fetchPrices, 15000);
+        }
+      };
+    } catch (e) {
+      pollInterval = setInterval(fetchPrices, 15000);
+    }
 
     return () => {
-      ws.close();
+      isMounted = false;
+      if (pollInterval) clearInterval(pollInterval);
+      if (ws) {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        } else if (ws.readyState === WebSocket.CONNECTING) {
+          ws.onopen = () => ws.close();
+        }
+      }
     };
   }, []);
 

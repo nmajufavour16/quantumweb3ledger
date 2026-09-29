@@ -156,6 +156,12 @@ export const api = {
     
     const data = await response.json();
     if (!response.ok) {
+      if (response.status === 401) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+        }
+        throw new Error('Your session has expired. Please sign in again.');
+      }
       throw new Error(data.message || 'Failed to link wallet');
     }
     return data;

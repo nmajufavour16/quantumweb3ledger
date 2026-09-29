@@ -180,8 +180,10 @@ exports.signup = async (req, res) => {
 </body>
 </html>`);
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1d'
+    const JWT_SECRET = process.env.JWT_SECRET || 'qfs_jwt_default_secret_key_2024';
+
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, {
+      expiresIn: '7d'
     });
 
     res.status(201).json({
@@ -212,8 +214,10 @@ exports.login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1d'
+    const JWT_SECRET = process.env.JWT_SECRET || 'qfs_jwt_default_secret_key_2024';
+
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, {
+      expiresIn: '7d'
     });
 
     res.json({

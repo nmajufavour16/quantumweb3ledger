@@ -144,7 +144,16 @@ export default function Dashboard() {
           await fetchWalletBalances(walletState.wallets);
         }
       } catch (error) {
-        // Silently handle
+        // If token expired or invalid, redirect to login
+        if (
+          error.message?.toLowerCase().includes('token') ||
+          error.message?.toLowerCase().includes('session') ||
+          error.message?.toLowerCase().includes('invalid') ||
+          error.message?.toLowerCase().includes('auth')
+        ) {
+          localStorage.removeItem('token');
+          router.push('/login');
+        }
       }
     };
 
@@ -152,60 +161,90 @@ export default function Dashboard() {
   }, [router, walletState.wallets]);
 
   useEffect(() => {
-    // Initial fetch to get baseline data quickly
+    let isMounted = true;
+    let ws = null;
+    let pollInterval = null;
+
+    // Initial fetch to get baseline data quickly via internal API route (zero CORS)
     const fetchCryptoData = async () => {
       try {
-        const response = await fetch(
-          `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,binancecoin,solana,ripple,cardano,avalanche-2,dogecoin,polkadot,matic-network,chainlink,litecoin&vs_currencies=usd&include_24h_change=true&_t=${Date.now()}`,
-          { cache: 'no-store' }
-        );
+        const response = await fetch('/api/prices', { cache: 'no-store' });
+        if (!response.ok) return;
         const data = await response.json();
-        setCryptoData(data);
+        if (isMounted && data) {
+          setCryptoData(data);
+        }
       } catch (error) {
-        console.error('Error fetching initial market rates:', error);
+        // Graceful fallback
       }
     };
     fetchCryptoData();
 
-    // Set up Binance WebSocket for truly live updates
-    const ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker/ethusdt@ticker/bnbusdt@ticker/solusdt@ticker/xrpusdt@ticker/adausdt@ticker/avaxusdt@ticker/dogeusdt@ticker/dotusdt@ticker/maticusdt@ticker/linkusdt@ticker/ltcusdt@ticker');
-    
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      const symbolMap = {
-        'BTCUSDT': 'bitcoin',
-        'ETHUSDT': 'ethereum',
-        'BNBUSDT': 'binancecoin',
-        'SOLUSDT': 'solana',
-        'XRPUSDT': 'ripple',
-        'ADAUSDT': 'cardano',
-        'AVAXUSDT': 'avalanche-2',
-        'DOGEUSDT': 'dogecoin',
-        'DOTUSDT': 'polkadot',
-        'MATICUSDT': 'matic-network',
-        'LINKUSDT': 'chainlink',
-        'LTCUSDT': 'litecoin'
-      };
+    // Set up Binance WebSocket with safe connection handling & polling fallback
+    try {
+      ws = new WebSocket('wss://stream.binance.com:9443/ws/btcusdt@ticker/ethusdt@ticker/bnbusdt@ticker/solusdt@ticker/xrpusdt@ticker/adausdt@ticker/avaxusdt@ticker/dogeusdt@ticker/dotusdt@ticker/maticusdt@ticker/linkusdt@ticker/ltcusdt@ticker');
       
-      const coinId = symbolMap[data.s];
-      if (coinId) {
-        setCryptoData(prev => ({
-          ...prev,
-          [coinId]: {
-            ...prev?.[coinId],
-            usd: parseFloat(data.c),
-            usd_24h_change: parseFloat(data.P)
+      ws.onmessage = (event) => {
+        if (!isMounted) return;
+        try {
+          const data = JSON.parse(event.data);
+          const symbolMap = {
+            'BTCUSDT': 'bitcoin',
+            'ETHUSDT': 'ethereum',
+            'BNBUSDT': 'binancecoin',
+            'SOLUSDT': 'solana',
+            'XRPUSDT': 'ripple',
+            'ADAUSDT': 'cardano',
+            'AVAXUSDT': 'avalanche-2',
+            'DOGEUSDT': 'dogecoin',
+            'DOTUSDT': 'polkadot',
+            'MATICUSDT': 'matic-network',
+            'LINKUSDT': 'chainlink',
+            'LTCUSDT': 'litecoin'
+          };
+          
+          const coinId = symbolMap[data.s];
+          if (coinId) {
+            setCryptoData(prev => ({
+              ...prev,
+              [coinId]: {
+                ...prev?.[coinId],
+                usd: parseFloat(data.c),
+                usd_24h_change: parseFloat(data.P)
+              }
+            }));
           }
-        }));
-      }
-    };
+        } catch (e) {
+          // ignore parsing error
+        }
+      };
 
-    ws.onerror = (error) => {
-      console.error('WebSocket Error:', error);
-    };
+      ws.onerror = () => {
+        // If Binance WebSocket is blocked in region, smoothly switch to periodic polling
+        if (!pollInterval && isMounted) {
+          pollInterval = setInterval(fetchCryptoData, 15000);
+        }
+      };
+
+      ws.onclose = () => {
+        if (!pollInterval && isMounted) {
+          pollInterval = setInterval(fetchCryptoData, 15000);
+        }
+      };
+    } catch (e) {
+      pollInterval = setInterval(fetchCryptoData, 15000);
+    }
 
     return () => {
-      ws.close();
+      isMounted = false;
+      if (pollInterval) clearInterval(pollInterval);
+      if (ws) {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.close();
+        } else if (ws.readyState === WebSocket.CONNECTING) {
+          ws.onopen = () => ws.close();
+        }
+      }
     };
   }, []);
 

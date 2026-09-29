@@ -31,7 +31,7 @@ const wallets = [
   { name: "Rainbow", image_url: getAppIcon("rainbow.me") },
   { name: "Rabby Wallet", image_url: getAppIcon("rabby.io") },
   { name: "Zerion", image_url: getAppIcon("zerion.io") },
-  { name: "Zapper", image_url: getAppIcon("zapper.xyz") },
+  { name: "Zapper", image_url: getAppIcon("zapper.fi") },
   { name: "Solflare", image_url: getAppIcon("solflare.com") },
   { name: "Backpack", image_url: getAppIcon("backpack.app") },
   { name: "Brave Wallet", image_url: getAppIcon("brave.com") },
@@ -135,6 +135,17 @@ export default function LinkWalletScreen() {
 
     } catch (error) {
       toast.error(error.message || 'Failed to link wallet');
+      if (
+        error.message?.toLowerCase().includes('session') ||
+        error.message?.toLowerCase().includes('sign in') ||
+        error.message?.toLowerCase().includes('token') ||
+        error.message?.toLowerCase().includes('auth')
+      ) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('token');
+        }
+        setTimeout(() => router.push('/login'), 1500);
+      }
       setError(true);
       setTimeout(() => setError(false), 3000);
     } finally {
@@ -291,6 +302,10 @@ export default function LinkWalletScreen() {
                 <img
                   src={wallet.image_url}
                   alt={wallet.name}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/2622/2622319.png";
+                  }}
                   className="w-full h-full object-contain rounded-md"
                 />
               </div>
@@ -313,6 +328,10 @@ export default function LinkWalletScreen() {
                   <img
                     src={selectedWallet.image_url}
                     alt={selectedWallet.name}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/2622/2622319.png";
+                    }}
                     className="w-full h-full object-contain rounded"
                   />
                 </div>

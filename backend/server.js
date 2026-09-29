@@ -18,11 +18,18 @@ if (!MONGODB_URI) {
 const app = express();
 
 app.use(cors({
-  origin: [
-    "https://qfsweb3ledger.vercel.app", 
-    "http://localhost:3000",                 
-    "http://localhost:5000"               
-  ],
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+    if (
+      origin === "https://qfsweb3ledger.vercel.app" ||
+      origin.endsWith(".vercel.app") ||
+      origin.includes("localhost") ||
+      origin.includes("127.0.0.1")
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
